@@ -151,6 +151,7 @@ socket.on('game_state_change', (data) => {
   } else if (state === 'DRAWING') {
     UI.hideAllOverlays();
     document.getElementById('round-display').textContent = data.currentRound || document.getElementById('round-display').textContent;
+    Sound.roundStart();
 
     if (isDrawer) {
       Canvas.setDrawerMode(true);
@@ -170,6 +171,7 @@ socket.on('game_state_change', (data) => {
     UI.showOverlay('turn-over');
     document.getElementById('tool-belt').classList.add('hidden');
     Canvas.setDrawerMode(false);
+    Sound.turnOver();
 
   } else if (state === 'ROUND_OVER') {
     UI.showOverlay('round-over');
@@ -223,6 +225,7 @@ socket.on('hint_reveal', ({ mask, maskDisplay }) => {
 socket.on('timer_tick', ({ timer, total }) => {
   document.getElementById('timer-text').textContent = timer;
   UI.updateTimerRing(timer, total);
+  if (timer <= 10 && timer > 0) Sound.timerTick();
 });
 
 // ─── Drawing Events ───────────────────────────────────────────────────────────
@@ -258,6 +261,7 @@ socket.on('guess_close', ({ message }) => {
 socket.on('guess_correct', ({ username, points }) => {
   UI.flashPlayerCard(username);
   UI.appendSystemMessage(`✓ ${username} guessed it! +${points} pts`, '#48bb78');
+  Sound.correctGuess();
 });
 
 // ─── Turn/Round Events ────────────────────────────────────────────────────────
