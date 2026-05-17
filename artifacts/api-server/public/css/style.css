@@ -1376,78 +1376,92 @@ html, body { height: 100%; font-family: var(--font); }
 }
 
 /* ═══════════════════════════════════════════════════════════════════
-   LOBBY FULL-SCREEN — clean skribbl-style 3-column layout
+   LOBBY FULL-SCREEN — skribbl-style 3-column layout
 ═══════════════════════════════════════════════════════════════════ */
+
+/* Owner badge: shown only as chat message, never as a panel */
+.skribbl-blue-owner-badge { display: none !important; }
+
 .lobby-full-screen {
   flex: 1;
   display: flex;
   flex-direction: row;
-  gap: 6px;
-  padding: 6px;
+  gap: 5px;
+  padding: 5px;
   min-height: 0;
   overflow: hidden;
-  background: #d8d8d8;
+  background: #d0d0d0;
 }
 
 /* Column base */
 .lfs-col {
   display: flex;
   flex-direction: column;
-  border-radius: 4px;
+  border-radius: 3px;
   overflow: hidden;
   min-height: 0;
   background: #ffffff;
-  border: 2px solid #d4d4d4;
+  border: 1px solid #c8c8c8;
 }
 
-/* Left: Players */
+/* Left: Players — narrow */
 .lfs-players {
-  width: 220px;
+  width: 170px;
   flex-shrink: 0;
 }
 
-/* Center: Settings */
+/* Center: Settings — fills remaining */
 .lfs-center {
   flex: 1;
   min-width: 0;
 }
 
-/* Right: Chat */
+/* Right: Chat — fixed width */
 .lfs-chat {
-  width: 250px;
+  width: 210px;
   flex-shrink: 0;
 }
 
-/* Column header strip */
+/* Column header strip — compact */
 .lfs-col-title {
-  padding: 7px 12px;
-  font-size: 0.72rem;
+  padding: 5px 10px;
+  font-size: 0.65rem;
   font-weight: 900;
-  color: #333;
-  background: #eeeeee;
-  border-bottom: 2px solid #d4d4d4;
+  color: #555;
+  background: #f0f0f0;
+  border-bottom: 1px solid #d0d0d0;
   flex-shrink: 0;
   text-transform: uppercase;
-  letter-spacing: 0.06em;
+  letter-spacing: 0.07em;
 }
 
 /* Center column children layout */
 .lfs-center .lobby-dark-panel { flex: 1; overflow-y: auto; min-height: 0; }
 .lfs-center .lobby-action-control-footer { flex-shrink: 0; }
-.lfs-center .lobby-invite-link-banner { flex-shrink: 0; }
+
+/* Custom words textarea — fixed small height, no resize */
+.cw-lobby-textarea {
+  height: 44px !important;
+  min-height: unset !important;
+  resize: none !important;
+}
 
 /* Chat right column */
 .lfs-chat .chat-log {
   flex: 1;
   overflow-y: auto;
-  padding: 8px;
+  padding: 6px 8px;
   min-height: 0;
   background: #fafafa;
-  font-size: 0.8rem;
+  font-size: 0.72rem;
 }
+.lfs-chat .chat-message { margin-bottom: 3px; }
+.lfs-chat .chat-sender  { font-size: 0.67rem; }
+.lfs-chat .chat-text    { font-size: 0.72rem; }
+.lfs-chat .system-msg   { font-size: 0.68rem; }
 .lfs-chat .chat-input-wrap {
   flex-shrink: 0;
-  border-top: 2px solid #d4d4d4;
+  border-top: 1px solid #d0d0d0;
   display: flex;
 }
 .lfs-chat #lobby-chat-input {
@@ -1456,45 +1470,58 @@ html, body { height: 100%; font-family: var(--font); }
   border: none;
   color: #333;
   font-family: var(--font);
-  font-size: 0.82rem;
-  padding: 10px 12px;
+  font-size: 0.75rem;
+  padding: 8px 10px;
   outline: none;
 }
 .lfs-chat .chat-send-btn {
   background: #0080ff;
   border: none;
   color: #fff;
-  padding: 0 14px;
+  padding: 0 12px;
   cursor: pointer;
-  font-size: 0.9rem;
+  font-size: 0.85rem;
   flex-shrink: 0;
   transition: background 0.15s;
 }
 .lfs-chat .chat-send-btn:hover { background: #0066cc; }
 
+/* Player cards in lobby — compact */
+.lfs-players .player-card { padding: 5px 7px; gap: 5px; }
+.lfs-players .player-card-name { font-size: 0.76rem; }
+.lfs-players .player-card-score { font-size: 0.65rem; }
+.lfs-players .player-card-avatar { width: 28px; height: 28px; }
+
 /* game-layout hidden while lobby is showing */
 .game-layout.lobby-hidden { display: none !important; }
 
-/* ── Mobile: CSS grid — settings full-width top, players+chat split bottom ── */
+/* ── Mobile: settings compact top, players+chat take remaining space ── */
 @media (max-width: 700px) {
   .lobby-full-screen {
     display: grid;
-    grid-template-columns: 1fr 1fr;
-    grid-template-rows: 1fr 200px;
-    gap: 6px;
-    padding: 6px;
+    grid-template-columns: 42% 58%;
+    grid-template-rows: auto minmax(150px, 1fr);
+    gap: 4px;
+    padding: 4px;
     overflow: hidden;
   }
   .lfs-center  { grid-column: 1 / 3; grid-row: 1; min-height: 0; overflow: hidden; }
-  .lfs-players { grid-column: 1;     grid-row: 2; width: auto; }
-  .lfs-chat    { grid-column: 2;     grid-row: 2; width: auto; height: auto; }
+  .lfs-players { grid-column: 1;     grid-row: 2; width: auto; min-height: 0; }
+  .lfs-chat    { grid-column: 2;     grid-row: 2; width: auto; min-height: 0; }
 
-  /* Settings panel scrollable inside center col on mobile */
-  .lfs-center .lobby-dark-panel { overflow-y: auto; }
+  /* Settings panel: fit content, scrollable, not stretching */
+  .lfs-center .lobby-dark-panel {
+    flex: 0 0 auto;
+    max-height: 28vh;
+    overflow-y: auto;
+  }
 
-  /* Slightly smaller text in settings on mobile */
-  .settings-control-group label { font-size: 0.68rem; }
-  .lob-select { width: 60px; font-size: 0.68rem; }
+  /* Tighter text on mobile settings */
+  .settings-control-group { padding: 3px 6px; }
+  .settings-control-group label { font-size: 0.64rem; }
+  .lob-select { width: 58px; font-size: 0.64rem; padding: 2px 2px; }
+  .lobby-header-ribbon { padding: 4px 8px; font-size: 0.72rem; }
+  .lfs-col-title { padding: 4px 8px; }
 }
 
 /* ═══════════════════════════════════════════════════════════════════
