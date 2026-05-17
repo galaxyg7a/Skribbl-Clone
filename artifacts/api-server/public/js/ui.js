@@ -410,11 +410,55 @@ const UI = (() => {
     });
   }
 
+  function _buildLobbyCards(list, players) {
+    list.innerHTML = '';
+    const sorted = [...players].sort((a, b) => b.score - a.score);
+    sorted.forEach(p => {
+      const card = document.createElement('div');
+      card.id = 'lobby-player-card-' + p.id;
+      card.style.cssText = [
+        'display:flex', 'flex-direction:row', 'align-items:center',
+        'gap:7px', 'padding:5px 8px', 'border-bottom:1px solid #eee',
+        'background:#fff', 'cursor:pointer',
+      ].join(';');
+
+      const avWrap = document.createElement('div');
+      avWrap.style.cssText = 'width:30px;height:30px;border-radius:4px;overflow:hidden;flex-shrink:0;';
+      const c = document.createElement('canvas');
+      c.width = 30; c.height = 30;
+      c.style.cssText = 'width:30px;height:30px;display:block;';
+      avWrap.appendChild(c);
+
+      const info = document.createElement('div');
+      info.style.cssText = 'flex:1;min-width:0;display:flex;flex-direction:column;gap:1px;';
+
+      const nameEl = document.createElement('div');
+      nameEl.style.cssText = [
+        'font-size:0.76rem', 'font-weight:800', 'white-space:nowrap',
+        'overflow:hidden', 'text-overflow:ellipsis',
+        'color:' + (p.isYou ? '#3b82f6' : '#222'),
+      ].join(';');
+      nameEl.textContent = p.username + (p.isYou ? ' (You)' : '') + (p.isHost ? ' 👑' : '');
+
+      const scoreEl = document.createElement('div');
+      scoreEl.style.cssText = 'font-size:0.62rem;color:#888;';
+      scoreEl.textContent = p.score + ' points';
+
+      info.appendChild(nameEl);
+      info.appendChild(scoreEl);
+      card.appendChild(avWrap);
+      card.appendChild(info);
+      list.appendChild(card);
+
+      renderSkribblAvatar(c, getAvatarFeatures(p.id, p.avatarColor, p.avatarData));
+    });
+  }
+
   function renderPlayerList(players) {
     const gameList  = document.getElementById('player-list');
     const lobbyList = document.getElementById('lobby-player-list');
     if (gameList)  _buildPlayerCards(gameList, players);
-    if (lobbyList) _buildPlayerCards(lobbyList, players);
+    if (lobbyList) _buildLobbyCards(lobbyList, players);
   }
 
   function flashPlayerCard(username) {

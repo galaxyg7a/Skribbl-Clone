@@ -316,6 +316,7 @@ html, body { height: 100%; font-family: var(--font); }
 ═══════════════════════════════════════════════════════════════════ */
 .game-body {
   height: 100vh;
+  height: 100dvh;
   display: flex;
   flex-direction: column;
   overflow: hidden;
@@ -1382,19 +1383,18 @@ html, body { height: 100%; font-family: var(--font); }
 .skribbl-blue-owner-badge { display: none !important; }
 
 /* Outer shell: column flex — top-row fills space, bottom-bar is fixed */
+/* Grid: top row fills space, bottom bar always visible at bottom */
 .lobby-full-screen {
   flex: 1;
-  display: flex;
-  flex-direction: column;
+  display: grid;
+  grid-template-rows: 1fr auto;
   min-height: 0;
   overflow: hidden;
   background: #d0d0d0;
-  gap: 0;
 }
 
 /* Top row: the three columns side-by-side */
 .lfs-top-row {
-  flex: 1;
   display: flex;
   flex-direction: row;
   gap: 4px;
@@ -1502,15 +1502,27 @@ html, body { height: 100%; font-family: var(--font); }
 .lfs-center .lobby-dark-panel { flex: 1; overflow-y: auto; min-height: 0; }
 .lfs-center .lobby-action-control-footer { flex-shrink: 0; }
 
-/* Custom words textarea */
+/* Custom words textarea — same large style as skribbl.io */
 .cw-lobby-textarea {
-  min-height: 52px !important;
-  height: 52px !important;
-  resize: none !important;
-  pointer-events: auto !important;
-  touch-action: auto !important;
-  -webkit-user-select: text !important;
-  user-select: text !important;
+  width: 100%;
+  min-height: 80px;
+  height: 80px;
+  resize: none;
+  background: #fff;
+  border: 1px solid #ccc;
+  border-radius: 3px;
+  color: #333;
+  font-family: var(--font);
+  font-size: 0.7rem;
+  padding: 6px 8px;
+  outline: none;
+  box-sizing: border-box;
+  display: block;
+  pointer-events: auto;
+  touch-action: auto;
+  -webkit-user-select: text;
+  user-select: text;
+  -webkit-tap-highlight-color: rgba(0,0,0,0.1);
 }
 
 /* Player cards in lobby — compact */
@@ -1526,32 +1538,36 @@ html, body { height: 100%; font-family: var(--font); }
 
 /* ── Mobile layout ── */
 @media (max-width: 700px) {
+  /* Top row becomes a grid: center spans full width, then players+chat below */
   .lfs-top-row {
     display: grid;
     grid-template-columns: 42% 1fr;
     grid-template-rows: auto 1fr;
     gap: 4px;
-    padding: 4px 4px 0 4px;
-    flex: 1;
     min-height: 0;
+    overflow: hidden;
   }
-  .lfs-center  { grid-column: 1 / 3; grid-row: 1; min-height: 0; }
+  .lfs-center  { grid-column: 1 / 3; grid-row: 1; min-height: 0; overflow: hidden; }
   .lfs-players { grid-column: 1;     grid-row: 2; width: auto; min-height: 0; }
   .lfs-chat    { grid-column: 2;     grid-row: 2; width: auto; min-height: 0; }
 
-  /* Settings panel: capped height, scrollable */
+  /* Settings panel: strictly capped, scrollable if content overflows */
   .lfs-center .lobby-dark-panel {
     flex: 0 0 auto;
-    max-height: 26vh;
+    max-height: 25vh;
     overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
   }
 
-  /* Tighter text on mobile settings */
-  .settings-control-group { padding: 3px 6px; }
-  .settings-control-group label { font-size: 0.64rem; }
-  .lob-select { width: 58px; font-size: 0.64rem; padding: 2px 2px; }
-  .lobby-header-ribbon { padding: 4px 8px; font-size: 0.72rem; }
-  .lfs-col-title { padding: 4px 8px; }
+  /* Tighter settings text on mobile */
+  .settings-control-group { padding: 3px 5px; }
+  .settings-control-group label { font-size: 0.62rem; }
+  .lob-select { width: 55px; font-size: 0.62rem; padding: 2px; }
+  .lobby-header-ribbon { padding: 3px 8px; font-size: 0.7rem; }
+  .lfs-col-title { padding: 3px 7px; font-size: 0.6rem; }
+  .lfs-bottom-bar { height: 40px; margin: 3px; }
+  #lobby-chat-input { font-size: 0.82rem; }
+  .lfs-bottom-send { width: 40px; }
 }
 
 /* ═══════════════════════════════════════════════════════════════════
