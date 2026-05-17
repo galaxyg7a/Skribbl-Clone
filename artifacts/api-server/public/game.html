@@ -145,20 +145,13 @@
         </div>
       </div>
 
-      <!-- Start / Owner badge bar -->
+      <!-- Start / Invite / Owner badge bar -->
       <div class="lobby-action-control-footer">
         <button id="start-btn" class="skribbl-green-start-btn hidden" onclick="startGame()">Start!</button>
+        <button type="button" id="invite-copy-btn" class="lobby-invite-btn" onclick="copyInviteLink()">🔗 Invite</button>
         <span id="lobby-host-badge" class="skribbl-blue-owner-badge hidden"></span>
       </div>
-
-      <!-- Invite link -->
-      <div class="lobby-invite-link-banner">
-        <label class="invite-title">Invite your friends!</label>
-        <div class="invite-input-row">
-          <input type="text" id="invite-link-input" class="lobby-invite-input" readonly value="" />
-          <button type="button" id="invite-copy-btn" onclick="copyInviteLink()">Copy</button>
-        </div>
-      </div>
+      <input type="text" id="invite-link-input" style="display:none" readonly value="" />
 
       <!-- Hidden compat elements -->
       <span id="lobby-player-count"     style="display:none"></span>
@@ -278,6 +271,7 @@
           placeholder="Type your guess here..."
           maxlength="120"
           autocomplete="off"
+          onkeydown="if(event.key==='Enter') sendChat()"
         />
         <button class="chat-send-btn" onclick="sendChat()">➤</button>
       </div>
@@ -427,17 +421,17 @@
     const btn   = document.getElementById('invite-copy-btn');
     if (!input || !input.value) return;
     navigator.clipboard.writeText(input.value).then(() => {
-      btn.textContent = 'Copied!';
+      btn.textContent = '✓ Copied!';
       btn.classList.add('copied');
       setTimeout(() => {
-        btn.textContent = 'Copy Link';
+        btn.textContent = '🔗 Invite';
         btn.classList.remove('copied');
       }, 1500);
     }).catch(() => {
       input.select();
       document.execCommand('copy');
-      btn.textContent = 'Copied!';
-      setTimeout(() => { btn.textContent = 'Copy Link'; }, 1500);
+      btn.textContent = '✓ Copied!';
+      setTimeout(() => { btn.textContent = '🔗 Invite'; }, 1500);
     });
   }
 
