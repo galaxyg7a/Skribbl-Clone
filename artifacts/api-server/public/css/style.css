@@ -1188,6 +1188,108 @@ html, body { height: 100%; font-family: var(--font); }
 /* ═══════════════════════════════════════════════════════════════════
    MOBILE RESPONSIVE
 ═══════════════════════════════════════════════════════════════════ */
+/* ═══════════════════════════════════════════════════════════════════
+   INVITE LINK — game lobby
+═══════════════════════════════════════════════════════════════════ */
+.invite-link-section {
+  display: none;
+  background: rgba(0,0,0,0.25);
+  border: 1.5px solid rgba(255,255,255,0.18);
+  border-radius: var(--radius);
+  padding: 10px 14px;
+  margin: 4px 0 2px;
+}
+.invite-link-label {
+  display: block;
+  color: var(--text-white);
+  font-size: 0.82rem;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  margin-bottom: 7px;
+}
+.invite-link-row {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+.invite-link-input {
+  flex: 1;
+  background: rgba(255,255,255,0.12);
+  border: 1.5px solid rgba(255,255,255,0.25);
+  border-radius: var(--radius-sm);
+  color: var(--text-white);
+  font-family: var(--font);
+  font-size: 0.8rem;
+  font-weight: 600;
+  padding: 7px 10px;
+  outline: none;
+  cursor: text;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.invite-copy-btn {
+  flex-shrink: 0;
+  background: var(--green);
+  border: none;
+  border-radius: var(--radius-sm);
+  color: #fff;
+  font-family: var(--font);
+  font-size: 0.82rem;
+  font-weight: 800;
+  padding: 7px 14px;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.1s;
+  white-space: nowrap;
+}
+.invite-copy-btn:hover { background: var(--green-dark); }
+.invite-copy-btn:active { transform: scale(0.96); }
+.invite-copy-btn.copied { background: #3498db; }
+
+/* ═══════════════════════════════════════════════════════════════════
+   INVITE NOTICE CARD — landing page
+═══════════════════════════════════════════════════════════════════ */
+.invite-notice-card {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: rgba(41,121,255,0.25);
+  border: 2px solid rgba(41,121,255,0.6);
+  border-radius: var(--radius);
+  padding: 14px 16px;
+  animation: invite-pulse 2s ease-in-out infinite;
+}
+@keyframes invite-pulse {
+  0%, 100% { border-color: rgba(41,121,255,0.6); }
+  50%       { border-color: rgba(41,121,255,1);   }
+}
+.invite-notice-icon {
+  font-size: 1.6rem;
+  flex-shrink: 0;
+  line-height: 1;
+}
+.invite-notice-text {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  min-width: 0;
+}
+.invite-notice-title {
+  color: rgba(255,255,255,0.75);
+  font-size: 0.78rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+.invite-notice-code {
+  color: #fff;
+  font-size: 1.3rem;
+  font-weight: 900;
+  letter-spacing: 0.12em;
+  word-break: break-all;
+}
+
 @media (max-width: 700px) {
   .game-layout {
     grid-template-columns: 1fr;

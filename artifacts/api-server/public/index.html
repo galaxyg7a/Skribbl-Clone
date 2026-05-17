@@ -93,14 +93,23 @@
       </div>
     </div>
 
+    <!-- Invite Notice Card (shown only when ?lobby= param is present) -->
+    <div id="invite-notice-card" class="invite-notice-card" style="display:none">
+      <div class="invite-notice-icon">🔗</div>
+      <div class="invite-notice-text">
+        <span class="invite-notice-title">Joining Private Lobby</span>
+        <span class="invite-notice-code" id="invite-notice-code"></span>
+      </div>
+    </div>
+
     <!-- Play! Button -->
-    <button class="btn-play" onclick="playPublic()">Play!</button>
+    <button class="btn-play" id="btn-play" onclick="playPublic()">Play!</button>
 
     <!-- Create Private Room -->
-    <button class="btn-private" onclick="createPrivateRoom()">Create Private Room</button>
+    <button class="btn-private" id="btn-private" onclick="createPrivateRoom()">Create Private Room</button>
 
     <!-- Join with code -->
-    <div class="join-section">
+    <div class="join-section" id="join-section">
       <input
         id="room-code-input"
         type="text"
@@ -117,6 +126,11 @@
 
   <script src="/socket.io/socket.io.js"></script>
   <script>
+  /* ─── Invite Code Detection ───────────────────────────────────── */
+  const _urlParams  = new URLSearchParams(window.location.search);
+  const _inviteCode = (_urlParams.get('lobby') || '').toUpperCase().trim();
+  const _isInviteFlow = /^[A-Z0-9]{4,8}$/.test(_inviteCode);
+
   /* ─── Avatar System ───────────────────────────────────────────── */
   let eyeIndex   = 0;
   let mouthIndex = 0;
@@ -398,11 +412,15 @@
   function playPublic() {
     const identity = getIdentity();
     if (!identity) return;
-    socket.emit('create_room', {
-      ...identity,
-      settings: { maxPlayers: 8, totalRounds: 3, drawTime: 80 },
-      isPublic: true,
-    });
+    if (_isInviteFlow) {
+      socket.emit('join_room', { ...identity, roomCode: _inviteCode });
+    } else {
+      socket.emit('create_room', {
+        ...identity,
+        settings: { maxPlayers: 8, totalRounds: 3, drawTime: 80 },
+        isPublic: true,
+      });
+    }
   }
 
   function createPrivateRoom() {
@@ -434,6 +452,21 @@
   /* ─── Init ────────────────────────────────────────────────────── */
   randomizeAvatar();
   buildParade();
+
+  if (_isInviteFlow) {
+    document.querySelector('.avatar-customizer').style.display = 'none';
+    document.getElementById('btn-private').style.display  = 'none';
+    document.getElementById('join-section').style.display = 'none';
+
+    const noticeCard = document.getElementById('invite-notice-card');
+    const noticeCode = document.getElementById('invite-notice-code');
+    noticeCard.style.display = '';
+    noticeCode.textContent = _inviteCode;
+
+    const playBtn = document.getElementById('btn-play');
+    playBtn.textContent = 'Join Game!';
+    playBtn.style.background = 'linear-gradient(135deg, #2979ff 0%, #1a5cd4 100%)';
+  }
   </script>
 </body>
 </html>

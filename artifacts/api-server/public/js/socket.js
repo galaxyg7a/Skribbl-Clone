@@ -44,6 +44,7 @@ socket.on('joined_room', (data) => {
   UI.updateSettingsDisplay(data.settings);
   UI.renderPlayerList(data.players);
   UI.showOverlay('lobby');
+  UI.updateInviteLink(data.roomCode);
 });
 
 socket.on('player_list_update', (players) => {

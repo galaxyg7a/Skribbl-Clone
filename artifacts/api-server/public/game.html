@@ -166,10 +166,19 @@
               </div>
             </div>
 
+            <!-- Invite Link Section -->
+            <div class="invite-link-section" id="invite-link-section">
+              <span class="invite-link-label">🔗 Invite your friends!</span>
+              <div class="invite-link-row">
+                <input type="text" id="invite-link-input" class="invite-link-input" readonly />
+                <button class="invite-copy-btn" id="invite-copy-btn" onclick="copyInviteLink()">Copy Link</button>
+              </div>
+            </div>
+
             <!-- Bottom bar: Start + notification -->
             <div class="lobby-bottom-bar">
               <button id="start-btn" class="btn-start hidden" onclick="startGame()">Start!</button>
-              <span id="lobby-subtitle" class="lobby-notification">Share the room code with friends!</span>
+              <span id="lobby-subtitle" class="lobby-notification">Waiting for players...</span>
             </div>
 
             <!-- Hidden compatibility elements for socket.js -->
@@ -388,6 +397,26 @@
   <script src="/js/socket.js"></script>
 
   <script>
+  /* ─── Invite link copy ────────────────────────────────────────── */
+  function copyInviteLink() {
+    const input = document.getElementById('invite-link-input');
+    const btn   = document.getElementById('invite-copy-btn');
+    if (!input || !input.value) return;
+    navigator.clipboard.writeText(input.value).then(() => {
+      btn.textContent = 'Copied!';
+      btn.classList.add('copied');
+      setTimeout(() => {
+        btn.textContent = 'Copy Link';
+        btn.classList.remove('copied');
+      }, 1500);
+    }).catch(() => {
+      input.select();
+      document.execCommand('copy');
+      btn.textContent = 'Copied!';
+      setTimeout(() => { btn.textContent = 'Copy Link'; }, 1500);
+    });
+  }
+
   /* ─── Lobby settings emit ─────────────────────────────────────── */
   function emitSettingChange() {
     if (typeof socket === 'undefined') return;

@@ -470,6 +470,16 @@ const UI = (() => {
       .replace(/>/g,'&gt;').replace(/"/g,'&quot;');
   }
 
+  /* ── Invite Link ────────────────────────────────────────────────── */
+  function updateInviteLink(roomCode) {
+    const input   = document.getElementById('invite-link-input');
+    const section = document.getElementById('invite-link-section');
+    if (!input || !roomCode) return;
+    const link = window.location.origin + '/?lobby=' + roomCode;
+    input.value = link;
+    if (section) section.style.display = '';
+  }
+
   return {
     showOverlay,
     hideAllOverlays,
@@ -493,5 +503,6 @@ const UI = (() => {
     votekickPlayer,
     mutePlayer,
     reportPlayer,
+    updateInviteLink,
   };
 })();
