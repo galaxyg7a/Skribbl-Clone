@@ -1,0 +1,44 @@
+2026-05-17T05:37:00.124159573Z [inf]  unpacking archive
+2026-05-17T05:37:00.180481779Z [inf]  using build driver railpack-v0.23.0
+2026-05-17T05:37:00.298994266Z [inf]                     
+2026-05-17T05:37:00.298999203Z [inf]  [38;2;125;86;243m╰─────────────────╯[0m
+2026-05-17T05:37:00.298999658Z [inf]  
+2026-05-17T05:37:00.299000852Z [inf]    [97m↳ Detected Node[0m
+2026-05-17T05:37:00.299004320Z [inf]    [1mPackages[0m  
+2026-05-17T05:37:00.299007050Z [inf]              
+2026-05-17T05:37:00.299009204Z [inf]      [38;5;245m$[0m [1mpnpm add -g node-gyp[0m
+2026-05-17T05:37:00.299009520Z [inf]      [38;5;245m$[0m [1mpnpm install --frozen-lockfile --prefer-offline[0m
+2026-05-17T05:37:00.299009830Z [inf]           
+2026-05-17T05:37:00.299010125Z [inf]    [95m▸ build[0m
+2026-05-17T05:37:00.299012624Z [inf]              
+2026-05-17T05:37:00.299013150Z [inf]    [1mDeploy[0m    
+2026-05-17T05:37:00.299013729Z [inf]    [38;5;238m──────────[0m
+2026-05-17T05:37:00.299014175Z [inf]      [38;5;245m$[0m [1mnode --enable-source-maps artifacts/api-server/dist/index.mjs[0m
+2026-05-17T05:37:00.467549543Z [inf]  resolve image config for docker-image://ghcr.io/railwayapp/railpack-frontend:v0.23.0
+2026-05-17T05:37:00.467850717Z [inf]  docker-image://ghcr.io/railwayapp/railpack-frontend:v0.23.0@sha256:ba4c430961d9ee3215c64807727a4b11e2198daac31250e9db9eaf9cee4624d6
+2026-05-17T05:37:00.568554169Z [inf]  load build definition from ./railpack-plan.json
+2026-05-17T05:37:00.578438967Z [inf]  load build definition from ./railpack-plan.json
+2026-05-17T05:37:00.593980913Z [inf]  copy /usr/local/bin/mise
+2026-05-17T05:37:00.593981948Z [inf]  install mise packages: node, pnpm
+2026-05-17T05:37:00.593982711Z [inf]  mkdir /etc/mise
+2026-05-17T05:37:00.593983174Z [inf]  install apt packages: libatomic1
+2026-05-17T05:37:00.593985158Z [inf]  docker-image://ghcr.io/railwayapp/railpack-builder:mise-2026.3.17
+2026-05-17T05:37:00.594081398Z [inf]  [railpack] hash used secrets
+2026-05-17T05:37:00.594082017Z [inf]  copy /app
+2026-05-17T05:37:00.594083226Z [inf]  copy /root/.cache
+2026-05-17T05:37:00.594086219Z [inf]  copy /app/node_modules
+2026-05-17T05:37:00.594370452Z [inf]  loading .
+2026-05-17T05:37:00.594371071Z [inf]  [railpack] secrets hash
+2026-05-17T05:37:00.594762001Z [inf]  [railpack] loading secrets
+2026-05-17T05:37:00.595321143Z [inf]  loading .
+2026-05-17T05:37:00.595321730Z [inf]  mkdir /etc/mise
+2026-05-17T05:37:00.595323479Z [inf]  copy /mise/installs
+2026-05-17T05:37:00.595325081Z [inf]  copy /etc/mise/config.toml
+2026-05-17T05:37:00.595325723Z [inf]  [railpack] secrets hash
+2026-05-17T05:37:00.597580481Z [inf]  copy /root/.local/state/mise
+2026-05-17T05:37:00.597581050Z [inf]  [railpack] secrets hash
+2026-05-17T05:37:00.729997624Z [inf]  [railpack] loading secrets
+2026-05-17T05:37:00.730951764Z [inf]  [railpack] copy secrets hash
+2026-05-17T05:37:00.730965590Z [inf]  mkdir -p /app/node_modules/.cache
+2026-05-17T05:37:00.731080574Z [inf]  [railpack] hash used secrets
+2026-05-17T05:37:00.731118709Z [inf]  pnpm add -g node-gyp
