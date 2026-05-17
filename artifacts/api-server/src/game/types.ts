@@ -16,6 +16,7 @@ export interface Player {
   id: string;
   username: string;
   avatarColor: string;
+  avatarData?: { bodyIndex: number; eyeIndex: number; mouthIndex: number };
   score: number;
   roundScore: number;
   hasGuessed: boolean;

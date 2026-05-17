@@ -63,127 +63,120 @@
 
         <!-- LOBBY OVERLAY -->
         <div id="overlay-lobby" class="canvas-overlay active">
-          <div class="lobby-panel">
-            <div class="lobby-info-bar">
-              <span id="lobby-title">Waiting for players...</span>
-              <span id="lobby-room-code" class="lobby-code-badge"></span>
+          <div class="skribbl-lobby">
+
+            <!-- Invite Link Card (white) -->
+            <div class="invite-link-card" id="invite-link-section" style="display:none">
+              <span class="invite-card-title">🔗 Invite your friends!</span>
+              <div class="invite-link-row">
+                <input type="text" id="invite-link-input" class="invite-link-input" readonly />
+                <button class="invite-copy-btn" id="invite-copy-btn" onclick="copyInviteLink()">Copy</button>
+              </div>
             </div>
 
-            <div class="lobby-settings-body">
-              <!-- Settings Grid -->
-              <div class="lobby-settings-grid">
-                <!-- Players -->
-                <div class="lobby-setting-row">
-                  <span class="lobby-setting-icon">👥</span>
-                  <span class="lobby-setting-label">Players</span>
-                  <select class="lobby-setting-select" id="lset-players" onchange="emitSettingChange()">
-                    <option value="2">2</option><option value="4">4</option>
-                    <option value="6">6</option><option value="8" selected>8</option>
-                    <option value="10">10</option><option value="12">12</option>
-                    <option value="16">16</option><option value="20">20</option>
-                  </select>
+            <!-- Dark settings panel -->
+            <div class="lobby-dark-panel">
+              <div class="lobby-grid">
+                <!-- Left column -->
+                <div>
+                  <div class="lob-row">
+                    <span class="lob-icon">👥</span>
+                    <span class="lob-label">Players</span>
+                    <select class="lob-select" id="lset-players" onchange="emitSettingChange()">
+                      <option value="2">2</option><option value="4">4</option>
+                      <option value="6">6</option><option value="8" selected>8</option>
+                      <option value="10">10</option><option value="12">12</option>
+                      <option value="16">16</option><option value="20">20</option>
+                    </select>
+                  </div>
+                  <div class="lob-row">
+                    <span class="lob-icon">🎨</span>
+                    <span class="lob-label">Drawtime</span>
+                    <select class="lob-select" id="lset-drawtime" onchange="emitSettingChange()">
+                      <option value="30">30</option><option value="45">45</option>
+                      <option value="60">60</option><option value="80" selected>80</option>
+                      <option value="100">100</option><option value="120">120</option>
+                      <option value="150">150</option><option value="180">180</option>
+                    </select>
+                  </div>
+                  <div class="lob-row">
+                    <span class="lob-icon">🎮</span>
+                    <span class="lob-label">Game Mode</span>
+                    <select class="lob-select" id="lset-gamemode">
+                      <option value="normal" selected>Normal</option>
+                      <option value="hidden">Hidden</option>
+                    </select>
+                  </div>
+                  <div class="lob-row">
+                    <span class="lob-icon">❓</span>
+                    <span class="lob-label">Hints</span>
+                    <select class="lob-select" id="lset-hints">
+                      <option value="0">0</option><option value="1">1</option>
+                      <option value="2" selected>2</option><option value="3">3</option>
+                      <option value="4">4</option>
+                    </select>
+                  </div>
                 </div>
-                <!-- Language -->
-                <div class="lobby-setting-row">
-                  <span class="lobby-setting-icon">🌐</span>
-                  <span class="lobby-setting-label">Language</span>
-                  <select class="lobby-setting-select" id="lset-language">
-                    <option value="en" selected>English</option>
-                    <option value="de">Deutsch</option>
-                    <option value="fr">Français</option>
-                    <option value="es">Español</option>
-                  </select>
+                <!-- Right column -->
+                <div>
+                  <div class="lob-row">
+                    <span class="lob-icon">🌐</span>
+                    <span class="lob-label">Language</span>
+                    <select class="lob-select" id="lset-language">
+                      <option value="en" selected>English</option>
+                      <option value="de">Deutsch</option>
+                      <option value="fr">Français</option>
+                      <option value="es">Español</option>
+                    </select>
+                  </div>
+                  <div class="lob-row">
+                    <span class="lob-icon">🔄</span>
+                    <span class="lob-label">Rounds</span>
+                    <select class="lob-select" id="lset-rounds" onchange="emitSettingChange()">
+                      <option value="2">2</option><option value="3" selected>3</option>
+                      <option value="4">4</option><option value="5">5</option>
+                      <option value="6">6</option><option value="8">8</option>
+                      <option value="10">10</option>
+                    </select>
+                  </div>
+                  <div class="lob-row">
+                    <span class="lob-icon">📝</span>
+                    <span class="lob-label">Word Count</span>
+                    <select class="lob-select" id="lset-wordcount">
+                      <option value="1">1</option><option value="2">2</option>
+                      <option value="3" selected>3</option><option value="4">4</option>
+                      <option value="5">5</option>
+                    </select>
+                  </div>
                 </div>
-                <!-- Drawtime -->
-                <div class="lobby-setting-row">
-                  <span class="lobby-setting-icon">🎨</span>
-                  <span class="lobby-setting-label">Drawtime</span>
-                  <select class="lobby-setting-select" id="lset-drawtime" onchange="emitSettingChange()">
-                    <option value="30">30</option><option value="45">45</option>
-                    <option value="60">60</option><option value="80" selected>80</option>
-                    <option value="100">100</option><option value="120">120</option>
-                    <option value="150">150</option><option value="180">180</option>
-                  </select>
-                </div>
-                <!-- Rounds -->
-                <div class="lobby-setting-row">
-                  <span class="lobby-setting-icon">🔄</span>
-                  <span class="lobby-setting-label">Rounds</span>
-                  <select class="lobby-setting-select" id="lset-rounds" onchange="emitSettingChange()">
-                    <option value="1">1</option><option value="2">2</option>
-                    <option value="3" selected>3</option><option value="4">4</option>
-                    <option value="5">5</option><option value="6">6</option>
-                    <option value="8">8</option>
-                  </select>
-                </div>
-                <!-- Game Mode -->
-                <div class="lobby-setting-row">
-                  <span class="lobby-setting-icon">🎮</span>
-                  <span class="lobby-setting-label">Game Mode</span>
-                  <select class="lobby-setting-select" id="lset-gamemode">
-                    <option value="normal" selected>Normal</option>
-                    <option value="hidden">Hidden</option>
-                    <option value="combination">Combi</option>
-                  </select>
-                </div>
-                <!-- Word Count -->
-                <div class="lobby-setting-row">
-                  <span class="lobby-setting-icon">📝</span>
-                  <span class="lobby-setting-label">Word Count</span>
-                  <select class="lobby-setting-select" id="lset-wordcount">
-                    <option value="1">1</option><option value="2">2</option>
-                    <option value="3" selected>3</option><option value="4">4</option>
-                    <option value="5">5</option>
-                  </select>
-                </div>
-                <!-- Hints -->
-                <div class="lobby-setting-row">
-                  <span class="lobby-setting-icon">❓</span>
-                  <span class="lobby-setting-label">Hints</span>
-                  <select class="lobby-setting-select" id="lset-hints">
-                    <option value="0">0</option><option value="1">1</option>
-                    <option value="2" selected>2</option><option value="3">3</option>
-                    <option value="5">5</option>
-                  </select>
-                </div>
-                <!-- (filler) -->
-                <div class="lobby-setting-row" style="opacity:0;pointer-events:none"></div>
               </div>
 
-              <!-- Custom Words -->
-              <div class="custom-words-section">
-                <div class="custom-words-header">
-                  <span>Custom words</span>
-                  <label class="custom-words-toggle">
+              <!-- Custom words -->
+              <div class="cw-section">
+                <div class="cw-header">
+                  <span class="cw-title">Custom words</span>
+                  <label class="cw-toggle">
                     <input type="checkbox" id="custom-words-only" />
                     Use custom words only
                   </label>
                 </div>
-                <textarea
-                  id="custom-words-input"
-                  placeholder="Minimum of 10 words. 1-32 characters per word! 20000 characters maximum. Separated by a , (comma)"
-                ></textarea>
+                <textarea id="custom-words-input" class="cw-textarea"
+                  placeholder="Minimum of 10 words. 1-32 characters per word! 20000 characters maximum. Separated by a , (comma)"></textarea>
               </div>
             </div>
 
-            <!-- Invite Link Section -->
-            <div class="invite-link-section" id="invite-link-section">
-              <span class="invite-link-label">🔗 Invite your friends!</span>
-              <div class="invite-link-row">
-                <input type="text" id="invite-link-input" class="invite-link-input" readonly />
-                <button class="invite-copy-btn" id="invite-copy-btn" onclick="copyInviteLink()">Copy Link</button>
-              </div>
-            </div>
-
-            <!-- Bottom bar: Start + notification -->
-            <div class="lobby-bottom-bar">
+            <!-- Action bar -->
+            <div class="lobby-action-bar">
               <button id="start-btn" class="btn-start hidden" onclick="startGame()">Start!</button>
-              <span id="lobby-subtitle" class="lobby-notification">Waiting for players...</span>
+              <span id="lobby-host-badge" class="lobby-host-badge hidden"></span>
             </div>
 
-            <!-- Hidden compatibility elements for socket.js -->
+            <!-- Hidden compat elements -->
             <span id="lobby-player-count"     style="display:none"></span>
             <span id="lobby-settings-display" style="display:none"></span>
+            <span id="lobby-room-code"        style="display:none"></span>
+            <span id="lobby-title"            style="display:none"></span>
+            <span id="lobby-subtitle"         style="display:none"></span>
           </div>
         </div>
 

@@ -95,6 +95,7 @@ function getPublicPlayerList(room: Room) {
     id: p.id,
     username: p.username,
     avatarColor: p.avatarColor,
+    avatarData: p.avatarData,
     score: p.score,
     roundScore: p.roundScore,
     hasGuessed: p.hasGuessed,
@@ -351,7 +352,7 @@ export function setupSocketIO(server: HttpServer) {
   io.on('connection', (socket: Socket) => {
     logger.info({ socketId: socket.id }, 'Socket connected');
 
-    socket.on('create_room', ({ username, avatarColor, settings, isPublic }) => {
+    socket.on('create_room', ({ username, avatarColor, avatarData, settings, isPublic }) => {
       const safeSettings = {
         maxPlayers: Math.min(Math.max(Number(settings?.maxPlayers) || 8, 2), 20),
         totalRounds: Math.min(Math.max(Number(settings?.totalRounds) || 3, 1), 8),
@@ -364,6 +365,7 @@ export function setupSocketIO(server: HttpServer) {
         id: socket.id,
         username: String(username || 'Player').slice(0, 20),
         avatarColor: String(avatarColor || '#FF5733'),
+        avatarData: avatarData || undefined,
         score: 0,
         roundScore: 0,
         hasGuessed: false,
@@ -387,7 +389,7 @@ export function setupSocketIO(server: HttpServer) {
       logger.info({ roomCode: room.roomCode, username }, 'Room created');
     });
 
-    socket.on('join_room', ({ roomCode, username, avatarColor }) => {
+    socket.on('join_room', ({ roomCode, username, avatarColor, avatarData }) => {
       const code = String(roomCode || '').toUpperCase().trim();
       const room = rooms.get(code);
 
@@ -408,6 +410,7 @@ export function setupSocketIO(server: HttpServer) {
         id: socket.id,
         username: String(username || 'Player').slice(0, 20),
         avatarColor: String(avatarColor || '#4CAF50'),
+        avatarData: avatarData || undefined,
         score: 0,
         roundScore: 0,
         hasGuessed: false,

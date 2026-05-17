@@ -43,12 +43,14 @@ socket.on('joined_room', (data) => {
 
   UI.updateSettingsDisplay(data.settings);
   UI.renderPlayerList(data.players);
+  UI.updateHostBadge(data.players);
   UI.showOverlay('lobby');
   UI.updateInviteLink(data.roomCode);
 });
 
 socket.on('player_list_update', (players) => {
   UI.renderPlayerList(players);
+  UI.updateHostBadge(players);
   const me = players.find(p => p.id === myPlayerId);
   if (me?.isHost) {
     document.getElementById('start-btn').classList.remove('hidden');
