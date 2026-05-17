@@ -291,14 +291,39 @@ const UI = (() => {
      OVERLAY MANAGER
   ══════════════════════════════════════════════════════════════════ */
   const OVERLAY_IDS = {
-    'lobby':          'overlay-lobby',
     'word-selection': 'overlay-word-selection',
     'turn-over':      'overlay-turn-over',
     'round-over':     'overlay-round-over',
     'game-over':      'overlay-game-over',
   };
 
+  function _showLobbyScreen() {
+    const ls = document.getElementById('lobby-screen');
+    const gl = document.querySelector('.game-layout');
+    if (ls) ls.classList.remove('hidden');
+    if (gl) gl.classList.add('lobby-hidden');
+  }
+
+  function _hideLobbyScreen() {
+    const ls = document.getElementById('lobby-screen');
+    const gl = document.querySelector('.game-layout');
+    if (ls) ls.classList.add('hidden');
+    if (gl) gl.classList.remove('lobby-hidden');
+  }
+
   function showOverlay(name) {
+    if (name === 'lobby') {
+      _showLobbyScreen();
+      // hide canvas overlays when in lobby
+      Object.values(OVERLAY_IDS).forEach(id => {
+        const el = document.getElementById(id);
+        if (el) { el.classList.add('hidden'); el.classList.remove('active'); }
+      });
+      const status = document.getElementById('header-status');
+      if (status) status.textContent = 'WAITING';
+      return;
+    }
+    _hideLobbyScreen();
     Object.entries(OVERLAY_IDS).forEach(([key, id]) => {
       const el = document.getElementById(id);
       if (!el) return;
@@ -308,7 +333,7 @@ const UI = (() => {
     const status = document.getElementById('header-status');
     if (status) {
       const labels = {
-        'lobby':'WAITING','word-selection':'CHOOSING',
+        'word-selection':'CHOOSING',
         'turn-over':'TURN OVER','round-over':'ROUND OVER','game-over':'GAME OVER',
       };
       status.textContent = labels[name] || 'WAITING';
@@ -316,6 +341,7 @@ const UI = (() => {
   }
 
   function hideAllOverlays() {
+    _hideLobbyScreen();
     Object.values(OVERLAY_IDS).forEach(id => {
       const el = document.getElementById(id);
       if (el) { el.classList.add('hidden'); el.classList.remove('active'); }
@@ -327,9 +353,7 @@ const UI = (() => {
   /* ══════════════════════════════════════════════════════════════════
      PLAYER LIST
   ══════════════════════════════════════════════════════════════════ */
-  function renderPlayerList(players) {
-    const list = document.getElementById('player-list');
-    if (!list) return;
+  function _buildPlayerCards(list, players) {
     list.innerHTML = '';
     const sorted = [...players].sort((a, b) => b.score - a.score);
 
@@ -395,6 +419,13 @@ const UI = (() => {
     });
   }
 
+  function renderPlayerList(players) {
+    const gameList  = document.getElementById('player-list');
+    const lobbyList = document.getElementById('lobby-player-list');
+    if (gameList)  _buildPlayerCards(gameList, players);
+    if (lobbyList) _buildPlayerCards(lobbyList, players);
+  }
+
   function flashPlayerCard(username) {
     const cards = document.querySelectorAll('.player-card');
     cards.forEach(card => {
@@ -449,12 +480,9 @@ const UI = (() => {
   /* ══════════════════════════════════════════════════════════════════
      CHAT
   ══════════════════════════════════════════════════════════════════ */
-  function appendChatMessage(username, message, color, avatarColor) {
-    const log = document.getElementById('chat-log');
-    if (!log) return;
+  function _buildChatRow(username, message, color, avatarColor) {
     const row = document.createElement('div');
     row.className = 'chat-message';
-
     const avatarEl = document.createElement('div');
     avatarEl.className = 'chat-avatar';
     const c = document.createElement('canvas');
@@ -462,37 +490,43 @@ const UI = (() => {
     avatarEl.appendChild(c);
     const features = getAvatarFeatures(username, avatarColor);
     renderSkribblAvatar(c, features);
-
     const bubble = document.createElement('div');
     bubble.className = 'chat-bubble';
-
     const senderEl = document.createElement('div');
     senderEl.className = 'chat-sender';
     senderEl.style.color = BODY_COLORS[features.bodyIndex % BODY_COLORS.length];
     senderEl.textContent = username;
-
     const textEl = document.createElement('div');
     textEl.className = 'chat-text';
     textEl.style.color = color || '#1a1a2e';
     textEl.textContent = message;
-
     bubble.appendChild(senderEl);
     bubble.appendChild(textEl);
     row.appendChild(avatarEl);
     row.appendChild(bubble);
-    log.appendChild(row);
-    _scrollChat(log);
+    return row;
+  }
+
+  function appendChatMessage(username, message, color, avatarColor) {
+    const gameLog  = document.getElementById('chat-log');
+    const lobbyLog = document.getElementById('lobby-chat-log');
+    if (gameLog)  { const r = _buildChatRow(username, message, color, avatarColor); gameLog.appendChild(r);  _scrollChat(gameLog); }
+    if (lobbyLog) { const r = _buildChatRow(username, message, color, avatarColor); lobbyLog.appendChild(r); _scrollChat(lobbyLog); }
   }
 
   function appendSystemMessage(message, color) {
-    const log = document.getElementById('chat-log');
-    if (!log) return;
-    const row = document.createElement('div');
-    row.className = 'chat-message system-msg';
-    row.style.color = color || '#555';
-    row.textContent = message;
-    log.appendChild(row);
-    _scrollChat(log);
+    const gameLog  = document.getElementById('chat-log');
+    const lobbyLog = document.getElementById('lobby-chat-log');
+    const _makeRow = (log) => {
+      const row = document.createElement('div');
+      row.className = 'chat-message system-msg';
+      row.style.color = color || '#555';
+      row.textContent = message;
+      log.appendChild(row);
+      _scrollChat(log);
+    };
+    if (gameLog)  _makeRow(gameLog);
+    if (lobbyLog) _makeRow(lobbyLog);
   }
 
   function appendPrivateHint(message) {

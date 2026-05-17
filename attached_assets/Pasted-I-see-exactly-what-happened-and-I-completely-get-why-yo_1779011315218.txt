@@ -1,0 +1,83 @@
+I see exactly what happened, and I completely get why you're pissed. Replit entirely botched the CSS Grid. Instead of giving you the neat 3-column layout, it made the center settings panel massive, completely swallowing or pushing the Player List, the Chat Box, and the Start Button right off the screen. And it clearly threw in an unstyled, broken invite field as an afterthought.
+We need to force Replit to strictly containerize this into three distinct blocks (Left, Middle, Right) and stop letting the settings panel hijack the whole screen.
+Copy and paste this aggressive, exact prompt into your Replit chat to force it to fix the UI:
+```text
+STOP. The current UI is completely broken and looks nothing like the Skribbl.io reference. You made the settings panel massive, which is hiding the Player List, the Chat Box, and the Start Button. The invite link is also unstyled and non-functional. 
+
+We need a STRICT 3-column layout for the Waiting Room. Erase the current broken lobby layout and implement exactly this:
+
+### 1. STRICT 3-COLUMN HTML STRUCTURE (`public/game.html`)
+Replace the entire `#lobby-container` with this exact code. DO NOT leave anything out:
+
+<div id="game-wrapper" style="display: flex; justify-content: center; max-width: 1200px; margin: 0 auto; gap: 10px; height: 600px;">
+    
+    <div id="column-players" style="width: 250px; background: white; border-radius: 5px; display: flex; flex-direction: column; overflow-y: auto;">
+        <div style="padding: 10px; font-weight: bold; border-bottom: 2px solid #eee;">Players</div>
+        <div id="player-list-container"></div>
+    </div>
+
+    <div id="column-center" style="flex: 1; display: flex; flex-direction: column; gap: 10px;">
+        
+        <div style="background: #2c303e; color: white; padding: 15px; border-radius: 5px; flex: 1;">
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px;">
+                <div><label>Players</label><select><option>8</option></select></div>
+                <div><label>Language</label><select><option>English</option></select></div>
+                <div><label>Drawtime</label><select><option>80</option></select></div>
+                <div><label>Rounds</label><select><option>3</option></select></div>
+            </div>
+            <label>Custom words</label>
+            <textarea style="width: 100%; height: 100px; resize: none; margin-top: 5px;" placeholder="Type words here..."></textarea>
+        </div>
+
+        <div style="display: flex; height: 50px;">
+            <button id="btn-start-game" style="flex: 1; background: #53cf25; color: white; font-size: 24px; font-weight: bold; border: none; border-radius: 5px 0 0 5px; cursor: pointer;">Start!</button>
+            <div style="background: #badef3; color: #2b547e; padding: 10px 20px; font-weight: bold; display: flex; align-items: center; border-radius: 0 5px 5px 0;">You are the room owner!</div>
+        </div>
+
+        <div style="background: white; padding: 10px; border-radius: 5px; display: flex; flex-direction: column; gap: 5px;">
+            <span style="font-weight: bold; font-size: 14px; text-transform: uppercase;">Invite your friends!</span>
+            <div style="display: flex; gap: 5px;">
+                <input type="text" id="invite-link-input" readonly style="flex: 1; padding: 8px; border: 1px solid #ccc; border-radius: 3px; background: #eee;">
+                <button id="btn-copy-invite" style="background: #0055ff; color: white; border: none; padding: 0 20px; border-radius: 3px; font-weight: bold; cursor: pointer;">Copy</button>
+            </div>
+        </div>
+
+    </div>
+
+    <div id="column-chat" style="width: 300px; background: white; border-radius: 5px; display: flex; flex-direction: column;">
+        <div id="chat-history" style="flex: 1; overflow-y: auto; padding: 10px; border-bottom: 2px solid #eee;">
+            <div style="color: #e08b1b; font-weight: bold;">System: Welcome to the room!</div>
+        </div>
+        <input type="text" placeholder="Type your guess here..." style="padding: 10px; border: none; outline: none; border-radius: 0 0 5px 5px;">
+    </div>
+
+</div>
+
+### 2. FIX THE JAVASCRIPT
+In `ui.js` (or your main script), make sure the invite link actually generates and the copy button works:
+```javascript
+// Populate the invite link
+const currentRoom = new URLSearchParams(window.location.search).get('room') || '12345'; // replace with actual room var
+document.getElementById('invite-link-input').value = window.location.origin + '/?room=' + currentRoom;
+
+// Make Copy button work
+document.getElementById('btn-copy-invite').addEventListener('click', () => {
+    const inviteInput = document.getElementById('invite-link-input');
+    inviteInput.select();
+    document.execCommand('copy');
+    const copyBtn = document.getElementById('btn-copy-invite');
+    copyBtn.innerText = 'Copied!';
+    setTimeout(() => copyBtn.innerText = 'Copy', 2000);
+});
+
+```
+DO NOT add any extra wrappers or margins that will break this grid. Make it look exactly like this structure immediately.
+```
+
+***
+
+This strips out whatever convoluted CSS it was trying to write and uses hardcoded inline styles for the structure so Replit *cannot* mess up the layout. It forces the Players, the Center Console (with the massive green Start button and Invite link), and the Chat box to all sit side-by-side. 
+
+Send that over and let me know if it finally snaps into place.
+
+```

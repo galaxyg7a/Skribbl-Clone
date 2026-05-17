@@ -47,7 +47,146 @@
   </header>
 
   <!-- ══════════════════════════════════════════
-       THREE-COLUMN LAYOUT
+       LOBBY SCREEN — full 3-column, shown while waiting
+  ══════════════════════════════════════════ -->
+  <div id="lobby-screen" class="lobby-full-screen hidden">
+
+    <!-- LEFT: Players -->
+    <div class="lfs-col lfs-players">
+      <div class="lfs-col-title">Players</div>
+      <div id="lobby-player-list" class="player-list"></div>
+    </div>
+
+    <!-- CENTER: Settings + Controls -->
+    <div class="lfs-col lfs-center">
+
+      <!-- Header ribbon -->
+      <div class="lobby-header-ribbon">
+        <span class="round-indicator">Round 1 of <span id="lobby-round-total">3</span></span>
+        <span class="lobby-status-text">WAITING</span>
+        <div onclick="UI.openSettingsModal()" style="cursor:pointer" title="Settings">⚙️</div>
+      </div>
+
+      <!-- Settings grid -->
+      <div class="lobby-dark-panel">
+        <div class="lobby-settings-matrix">
+          <div class="settings-control-group">
+            <label>👥 Players</label>
+            <select class="lob-select" id="lset-players" onchange="emitSettingChange()">
+              <option value="2">2</option><option value="4">4</option>
+              <option value="6">6</option><option value="8" selected>8</option>
+              <option value="10">10</option><option value="12">12</option>
+              <option value="16">16</option><option value="20">20</option>
+            </select>
+          </div>
+          <div class="settings-control-group">
+            <label>🌐 Language</label>
+            <select class="lob-select" id="lset-language">
+              <option value="en" selected>English</option>
+              <option value="de">Deutsch</option>
+              <option value="fr">Français</option>
+              <option value="es">Español</option>
+            </select>
+          </div>
+          <div class="settings-control-group">
+            <label>⏱️ Drawtime</label>
+            <select class="lob-select" id="lset-drawtime" onchange="emitSettingChange()">
+              <option value="30">30</option><option value="45">45</option>
+              <option value="60">60</option><option value="80" selected>80</option>
+              <option value="100">100</option><option value="120">120</option>
+              <option value="150">150</option><option value="180">180</option>
+            </select>
+          </div>
+          <div class="settings-control-group">
+            <label>🔄 Rounds</label>
+            <select class="lob-select" id="lset-rounds" onchange="emitSettingChange()">
+              <option value="2">2</option><option value="3" selected>3</option>
+              <option value="4">4</option><option value="5">5</option>
+              <option value="6">6</option><option value="8">8</option>
+              <option value="10">10</option>
+            </select>
+          </div>
+          <div class="settings-control-group">
+            <label>🎮 Game Mode</label>
+            <select class="lob-select" id="lset-gamemode">
+              <option value="normal" selected>Normal</option>
+              <option value="hidden">Hidden</option>
+            </select>
+          </div>
+          <div class="settings-control-group">
+            <label>📝 Word Count</label>
+            <select class="lob-select" id="lset-wordcount">
+              <option value="1">1</option><option value="2">2</option>
+              <option value="3" selected>3</option><option value="4">4</option>
+              <option value="5">5</option>
+            </select>
+          </div>
+          <div class="settings-control-group full-width-row">
+            <label>❓ Hints</label>
+            <select class="lob-select" id="lset-hints">
+              <option value="0">0</option><option value="1">1</option>
+              <option value="2" selected>2</option><option value="3">3</option>
+              <option value="4">4</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Custom words -->
+        <div class="lobby-custom-words-container">
+          <div class="cw-header">
+            <span class="cw-title">Custom words</span>
+            <label class="cw-toggle">
+              <input type="checkbox" id="custom-words-only" />
+              Use custom words only
+            </label>
+          </div>
+          <textarea id="custom-words-input" class="cw-lobby-textarea"
+            placeholder="Minimum of 10 words. 1-32 characters per word! 20000 characters maximum. Separated by a , (comma)"></textarea>
+        </div>
+      </div>
+
+      <!-- Start / Owner badge bar -->
+      <div class="lobby-action-control-footer">
+        <button id="start-btn" class="skribbl-green-start-btn hidden" onclick="startGame()">Start!</button>
+        <span id="lobby-host-badge" class="skribbl-blue-owner-badge hidden"></span>
+      </div>
+
+      <!-- Invite link -->
+      <div class="lobby-invite-link-banner">
+        <label class="invite-title">Invite your friends!</label>
+        <div class="invite-input-row">
+          <input type="text" id="invite-link-input" class="lobby-invite-input" readonly value="" />
+          <button type="button" id="invite-copy-btn" onclick="copyInviteLink()">Copy</button>
+        </div>
+      </div>
+
+      <!-- Hidden compat elements -->
+      <span id="lobby-player-count"     style="display:none"></span>
+      <span id="lobby-settings-display" style="display:none"></span>
+      <span id="lobby-room-code"        style="display:none"></span>
+      <span id="lobby-title"            style="display:none"></span>
+      <span id="lobby-subtitle"         style="display:none"></span>
+    </div>
+
+    <!-- RIGHT: Chat -->
+    <div class="lfs-col lfs-chat">
+      <div id="lobby-chat-log" class="chat-log"></div>
+      <div class="chat-input-wrap">
+        <input
+          id="lobby-chat-input"
+          type="text"
+          placeholder="Type your guess here..."
+          maxlength="120"
+          autocomplete="off"
+          onkeydown="if(event.key==='Enter') sendChatFromLobby()"
+        />
+        <button class="chat-send-btn" onclick="sendChatFromLobby()">➤</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════
+       THREE-COLUMN LAYOUT (game mode)
   ══════════════════════════════════════════ -->
   <div class="game-layout">
 
@@ -60,119 +199,6 @@
     <main class="game-center">
       <div class="canvas-wrap">
         <canvas id="draw-canvas" width="800" height="600"></canvas>
-
-        <!-- LOBBY OVERLAY -->
-        <div id="overlay-lobby" class="canvas-overlay active">
-          <div class="skribbl-lobby">
-
-            <!-- Header ribbon -->
-            <div class="lobby-header-ribbon">
-              <span class="round-indicator">Round <span id="lobby-round-display">1</span> of <span id="lobby-round-total">3</span></span>
-              <span class="lobby-status-text">WAITING</span>
-              <div class="settings-gear-icon" onclick="UI.openSettingsModal()" style="cursor:pointer">⚙️</div>
-            </div>
-
-            <!-- Dark settings panel -->
-            <div class="lobby-dark-panel">
-              <div class="lobby-settings-matrix">
-                <div class="settings-control-group">
-                  <label>👥 Players</label>
-                  <select class="lob-select" id="lset-players" onchange="emitSettingChange()">
-                    <option value="2">2</option><option value="4">4</option>
-                    <option value="6">6</option><option value="8" selected>8</option>
-                    <option value="10">10</option><option value="12">12</option>
-                    <option value="16">16</option><option value="20">20</option>
-                  </select>
-                </div>
-                <div class="settings-control-group">
-                  <label>🌐 Language</label>
-                  <select class="lob-select" id="lset-language">
-                    <option value="en" selected>English</option>
-                    <option value="de">Deutsch</option>
-                    <option value="fr">Français</option>
-                    <option value="es">Español</option>
-                  </select>
-                </div>
-                <div class="settings-control-group">
-                  <label>⏱️ Drawtime</label>
-                  <select class="lob-select" id="lset-drawtime" onchange="emitSettingChange()">
-                    <option value="30">30</option><option value="45">45</option>
-                    <option value="60">60</option><option value="80" selected>80</option>
-                    <option value="100">100</option><option value="120">120</option>
-                    <option value="150">150</option><option value="180">180</option>
-                  </select>
-                </div>
-                <div class="settings-control-group">
-                  <label>🔄 Rounds</label>
-                  <select class="lob-select" id="lset-rounds" onchange="emitSettingChange()">
-                    <option value="2">2</option><option value="3" selected>3</option>
-                    <option value="4">4</option><option value="5">5</option>
-                    <option value="6">6</option><option value="8">8</option>
-                    <option value="10">10</option>
-                  </select>
-                </div>
-                <div class="settings-control-group">
-                  <label>🎮 Game Mode</label>
-                  <select class="lob-select" id="lset-gamemode">
-                    <option value="normal" selected>Normal</option>
-                    <option value="hidden">Hidden</option>
-                  </select>
-                </div>
-                <div class="settings-control-group">
-                  <label>📝 Word Count</label>
-                  <select class="lob-select" id="lset-wordcount">
-                    <option value="1">1</option><option value="2">2</option>
-                    <option value="3" selected>3</option><option value="4">4</option>
-                    <option value="5">5</option>
-                  </select>
-                </div>
-                <div class="settings-control-group full-width-row">
-                  <label>❓ Hints</label>
-                  <select class="lob-select" id="lset-hints">
-                    <option value="0">0</option><option value="1">1</option>
-                    <option value="2" selected>2</option><option value="3">3</option>
-                    <option value="4">4</option>
-                  </select>
-                </div>
-              </div>
-
-              <!-- Custom words -->
-              <div class="lobby-custom-words-container">
-                <div class="cw-header">
-                  <span class="cw-title">Custom words</span>
-                  <label class="cw-toggle">
-                    <input type="checkbox" id="custom-words-only" />
-                    Use custom words only
-                  </label>
-                </div>
-                <textarea id="custom-words-input" class="cw-lobby-textarea"
-                  placeholder="Minimum of 10 words. 1-32 characters per word! 20000 characters maximum. Separated by a , (comma)"></textarea>
-              </div>
-            </div>
-
-            <!-- Invite link banner -->
-            <div class="lobby-invite-link-banner" id="invite-link-section">
-              <label class="invite-title">Invite your friends!</label>
-              <div class="invite-input-row">
-                <input type="text" id="invite-link-input" class="lobby-invite-input" readonly value="" />
-                <button type="button" id="invite-copy-btn" onclick="copyInviteLink()">Copy</button>
-              </div>
-            </div>
-
-            <!-- Action footer -->
-            <div class="lobby-action-control-footer">
-              <button id="start-btn" class="skribbl-green-start-btn hidden" onclick="startGame()">Start!</button>
-              <span id="lobby-host-badge" class="skribbl-blue-owner-badge hidden"></span>
-            </div>
-
-            <!-- Hidden compat elements -->
-            <span id="lobby-player-count"     style="display:none"></span>
-            <span id="lobby-settings-display" style="display:none"></span>
-            <span id="lobby-room-code"        style="display:none"></span>
-            <span id="lobby-title"            style="display:none"></span>
-            <span id="lobby-subtitle"         style="display:none"></span>
-          </div>
-        </div>
 
         <!-- WORD SELECTION OVERLAY -->
         <div id="overlay-word-selection" class="canvas-overlay word-selection-overlay hidden">
@@ -384,6 +410,16 @@
   <script src="/js/socket.js"></script>
 
   <script>
+  /* ─── Lobby chat send ────────────────────────────────────────── */
+  function sendChatFromLobby() {
+    const input = document.getElementById('lobby-chat-input');
+    if (!input) return;
+    const msg = input.value.trim();
+    if (!msg || typeof socket === 'undefined') return;
+    socket.emit('chat', { message: msg });
+    input.value = '';
+  }
+
   /* ─── Invite link copy ────────────────────────────────────────── */
   function copyInviteLink() {
     const input = document.getElementById('invite-link-input');
