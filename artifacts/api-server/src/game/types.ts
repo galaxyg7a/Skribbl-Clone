@@ -45,6 +45,7 @@ export interface Room {
   timer: number;
   timerId: ReturnType<typeof setInterval> | null;
   wordSelectionTimerId: ReturnType<typeof setTimeout> | null;
+  deleteTimerId: ReturnType<typeof setTimeout> | null;
   guessedCount: number;
   players: Player[];
   revealedIndices: number[];

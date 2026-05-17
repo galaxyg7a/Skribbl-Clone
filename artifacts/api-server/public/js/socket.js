@@ -14,9 +14,28 @@ let isDrawer = false;
 // ─── Connection Lifecycle ─────────────────────────────────────────────────────
 socket.on('connect', () => {
   console.log('[socket] connected:', socket.id);
-  const savedRoom = sessionStorage.getItem('skribbl_room');
+
+  // Read room code from URL params first, then sessionStorage as fallback
+  const urlParams  = new URLSearchParams(window.location.search);
+  const urlRoom    = (urlParams.get('room') || '').toUpperCase().trim();
+  const savedRoom  = urlRoom || (sessionStorage.getItem('skribbl_room') || '');
+
   if (savedRoom) {
     myRoomCode = savedRoom;
+    // Auto-rejoin: restore identity from sessionStorage
+    let identity = {};
+    try {
+      const raw = sessionStorage.getItem('skribbl_identity');
+      if (raw) identity = JSON.parse(raw);
+    } catch (_) {}
+    if (identity.username) {
+      socket.emit('join_room', {
+        roomCode: savedRoom,
+        username: identity.username,
+        avatarColor: identity.avatarColor || '#4CAF50',
+        avatarData: identity.avatarData || undefined,
+      });
+    }
   }
 });
 

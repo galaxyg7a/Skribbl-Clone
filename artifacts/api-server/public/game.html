@@ -416,7 +416,7 @@
     if (!input) return;
     const msg = input.value.trim();
     if (!msg || typeof socket === 'undefined') return;
-    socket.emit('chat', { message: msg });
+    socket.emit('chat_message', { message: msg });
     input.value = '';
   }
 

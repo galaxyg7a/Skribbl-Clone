@@ -245,6 +245,8 @@
     }
   }
 
+  let pendingIdentity = null;
+
   /* ─── Error ───────────────────────────────────────────────────── */
   function showError(msg) {
     document.getElementById('error-text').textContent = msg;
@@ -264,15 +266,19 @@
   /* ─── Socket ──────────────────────────────────────────────────── */
   const socket = io();
 
-  socket.on('joined_room', ({ roomCode }) => {
+  socket.on('joined_room', ({ roomCode, playerId }) => {
     sessionStorage.setItem('skribbl_room', roomCode);
-    window.location.href = '/game';
+    sessionStorage.setItem('skribbl_player_id', playerId);
+    const identity = pendingIdentity || {};
+    sessionStorage.setItem('skribbl_identity', JSON.stringify(identity));
+    window.location.href = '/game?room=' + roomCode;
   });
   socket.on('error', ({ message }) => showError(message));
 
   function playPublic() {
     const identity = getIdentity();
     if (!identity) return;
+    pendingIdentity = identity;
     if (_isInviteFlow) {
       socket.emit('join_room', { ...identity, roomCode: _inviteCode });
     } else {
@@ -287,6 +293,7 @@
   function createPrivateRoom() {
     const identity = getIdentity();
     if (!identity) return;
+    pendingIdentity = identity;
     socket.emit('create_room', {
       ...identity,
       settings: { maxPlayers: 8, totalRounds: 3, drawTime: 80 },
@@ -297,6 +304,7 @@
   function joinRoom() {
     const identity = getIdentity();
     if (!identity) return;
+    pendingIdentity = identity;
     const roomCode = document.getElementById('room-code-input').value.trim().toUpperCase();
     if (roomCode.length < 4) { showError('Enter a valid room code.'); return; }
     socket.emit('join_room', { ...identity, roomCode });

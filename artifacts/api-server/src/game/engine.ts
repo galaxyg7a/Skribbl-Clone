@@ -69,6 +69,7 @@ function createRoom(settings: Room['settings'], isPublic: boolean): Room {
     timer: 0,
     timerId: null,
     wordSelectionTimerId: null,
+    deleteTimerId: null,
     guessedCount: 0,
     players: [],
     revealedIndices: [],
@@ -86,8 +87,23 @@ function safeDeleteRoom(roomCode: string) {
   if (!room) return;
   if (room.timerId) clearInterval(room.timerId);
   if (room.wordSelectionTimerId) clearTimeout(room.wordSelectionTimerId);
+  if (room.deleteTimerId) clearTimeout(room.deleteTimerId);
   rooms.delete(roomCode);
   logger.info({ roomCode }, 'Room deleted');
+}
+
+function scheduleRoomDelete(roomCode: string) {
+  const room = rooms.get(roomCode);
+  if (!room) return;
+  if (room.deleteTimerId) clearTimeout(room.deleteTimerId);
+  room.deleteTimerId = setTimeout(() => {
+    if (!rooms.has(roomCode)) return;
+    const r = rooms.get(roomCode)!;
+    if (r.players.length === 0) {
+      safeDeleteRoom(roomCode);
+      logger.info({ roomCode }, 'Room deleted after grace period');
+    }
+  }, 12000);
 }
 
 function getPublicPlayerList(room: Room) {
@@ -406,6 +422,12 @@ export function setupSocketIO(server: HttpServer) {
         return;
       }
 
+      // Cancel any pending grace-period deletion now that someone is joining
+      if (room.deleteTimerId) {
+        clearTimeout(room.deleteTimerId);
+        room.deleteTimerId = null;
+      }
+
       const player: Player = {
         id: socket.id,
         username: String(username || 'Player').slice(0, 20),
@@ -414,7 +436,7 @@ export function setupSocketIO(server: HttpServer) {
         score: 0,
         roundScore: 0,
         hasGuessed: false,
-        isHost: false,
+        isHost: !room.players.some(p => p.isHost),
         isDrawing: false,
         isConnected: true,
       };
@@ -670,7 +692,7 @@ export function setupSocketIO(server: HttpServer) {
       playerRoomMap.delete(socket.id);
 
       if (room.players.length === 0) {
-        safeDeleteRoom(roomCode);
+        scheduleRoomDelete(roomCode);
         return;
       }
 
