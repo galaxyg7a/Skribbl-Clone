@@ -1306,29 +1306,29 @@ html, body { height: 100%; font-family: var(--font); }
 
 /* Invite button (beside Start) */
 .lobby-invite-btn {
+  flex: 1;
   background: #0080ff;
   color: white;
   border: none;
-  padding: 0 14px;
+  padding: 0;
   cursor: pointer;
   font-weight: 800;
-  font-size: 0.82rem;
+  font-size: 0.9rem;
   font-family: var(--font);
   white-space: nowrap;
-  flex-shrink: 0;
-  border-left: 2px solid rgba(0,0,0,0.1);
+  border-left: 2px solid rgba(0,0,0,0.12);
   transition: background 0.15s;
 }
 .lobby-invite-btn:hover { background: #0066cc; }
 .lobby-invite-btn.copied { background: #4caf50; }
 
-/* Action footer: Start + host badge */
+/* Action footer: Start + Invite — 50/50 */
 .lobby-action-control-footer {
   display: flex;
   align-items: stretch;
-  min-height: 48px;
+  min-height: 42px;
   flex-shrink: 0;
-  border-top: 2px solid #d4d4d4;
+  border-top: 1px solid #d4d4d4;
 }
 .skribbl-green-start-btn {
   flex: 1;
@@ -1336,9 +1336,9 @@ html, body { height: 100%; font-family: var(--font); }
   border: none;
   color: #fff;
   font-family: var(--font);
-  font-size: 1.2rem;
+  font-size: 0.9rem;
   font-weight: 900;
-  padding: 10px 20px;
+  padding: 8px 10px;
   cursor: pointer;
   box-shadow: inset 0 -3px 0 rgba(0,0,0,0.18);
   transition: background 0.12s;
@@ -1461,27 +1461,37 @@ html, body { height: 100%; font-family: var(--font); }
 .lfs-chat .system-msg   { font-size: 0.68rem; }
 .lfs-chat .chat-input-wrap {
   flex-shrink: 0;
+  min-height: 36px;
+  height: 36px;
   border-top: 1px solid #d0d0d0;
   display: flex;
+  align-items: stretch;
 }
 .lfs-chat #lobby-chat-input {
   flex: 1;
+  min-width: 0;
   background: #fff;
   border: none;
   color: #333;
   font-family: var(--font);
-  font-size: 0.75rem;
-  padding: 8px 10px;
+  font-size: 0.73rem;
+  padding: 0 8px;
   outline: none;
+  height: 100%;
 }
 .lfs-chat .chat-send-btn {
   background: #0080ff;
   border: none;
   color: #fff;
-  padding: 0 12px;
+  width: 36px;
+  height: 100%;
+  padding: 0;
   cursor: pointer;
-  font-size: 0.85rem;
+  font-size: 0.8rem;
   flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   transition: background 0.15s;
 }
 .lfs-chat .chat-send-btn:hover { background: #0066cc; }
