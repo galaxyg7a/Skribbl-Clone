@@ -51,6 +51,9 @@
   ══════════════════════════════════════════ -->
   <div id="lobby-screen" class="lobby-full-screen hidden">
 
+  <!-- TOP ROW: three columns -->
+  <div class="lfs-top-row">
+
     <!-- LEFT: Players -->
     <div class="lfs-col lfs-players">
       <div class="lfs-col-title">Players</div>
@@ -160,23 +163,28 @@
       <span id="lobby-subtitle"         style="display:none"></span>
     </div>
 
-    <!-- RIGHT: Chat -->
+    <!-- RIGHT: Chat (log only — input is in bottom bar) -->
     <div class="lfs-col lfs-chat">
       <div class="lfs-col-title">Chat</div>
       <div id="lobby-chat-log" class="chat-log"></div>
-      <div class="chat-input-wrap">
-        <input
-          id="lobby-chat-input"
-          type="text"
-          placeholder="Type a message..."
-          maxlength="120"
-          autocomplete="off"
-          onkeydown="if(event.key==='Enter') sendChatFromLobby()"
-        />
-        <button class="chat-send-btn" onclick="sendChatFromLobby()">➤</button>
-      </div>
     </div>
+
+  </div><!-- /.lfs-top-row -->
+
+  <!-- BOTTOM BAR: full-width typing input (matches skribbl.io) -->
+  <div class="lfs-bottom-bar">
+    <input
+      id="lobby-chat-input"
+      type="text"
+      placeholder="Type your guess here..."
+      maxlength="120"
+      autocomplete="off"
+      onkeydown="if(event.key==='Enter') sendChatFromLobby()"
+    />
+    <button class="lfs-bottom-send" onclick="sendChatFromLobby()">➤</button>
   </div>
+
+  </div><!-- /#lobby-screen -->
 
   <!-- ══════════════════════════════════════════
        THREE-COLUMN LAYOUT (game mode)

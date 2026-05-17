@@ -398,6 +398,8 @@ const UI = (() => {
       avatarWrap.className = 'player-card-avatar';
       const c = document.createElement('canvas');
       c.width = 36; c.height = 36;
+      c.style.width  = '36px';
+      c.style.height = '36px';
       avatarWrap.appendChild(c);
       renderSkribblAvatar(c, getAvatarFeatures(p.id, p.avatarColor, p.avatarData));
 
