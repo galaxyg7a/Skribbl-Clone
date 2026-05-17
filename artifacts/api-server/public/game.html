@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Skribbl! — Playing</title>
+  <link rel="stylesheet" href="/css/style.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet" />
+</head>
+<body class="game-body">
+
+  <!-- ══════════════ TOP BAR ══════════════ -->
+  <header class="top-bar">
+    <div class="top-bar-left">
+      <span class="logo-sm">✏️ Skribbl!</span>
+      <span id="room-code-badge" class="room-code-badge">ROOM: ——</span>
+    </div>
+    <div class="top-bar-center">
+      <div class="round-indicator">Round <span id="round-display">–</span> of <span id="round-total">–</span></div>
+      <div class="word-display-container">
+        <div id="word-display" class="word-display">Waiting...</div>
+      </div>
+      <div class="timer-wrapper">
+        <svg class="timer-ring" viewBox="0 0 52 52">
+          <circle class="timer-ring-bg" cx="26" cy="26" r="23"/>
+          <circle id="timer-ring-fill" class="timer-ring-fill" cx="26" cy="26" r="23"/>
+        </svg>
+        <span id="timer-text" class="timer-text">–</span>
+      </div>
+    </div>
+    <div class="top-bar-right">
+      <button class="btn-leave" onclick="leaveGame()">Leave</button>
+    </div>
+  </header>
+
+  <!-- ══════════════ MAIN THREE-COLUMN GRID ══════════════ -->
+  <main class="game-grid">
+
+    <!-- ── LEFT: SCOREBOARD ── -->
+    <aside class="scoreboard" id="scoreboard">
+      <div class="scoreboard-header">Players</div>
+      <div id="player-list" class="player-list"></div>
+    </aside>
+
+    <!-- ── CENTER: GAME BOARD ── -->
+    <section class="game-center">
+      <div class="canvas-wrapper">
+        <!-- CANVAS -->
+        <canvas id="draw-canvas" width="800" height="600"></canvas>
+
+        <!-- OVERLAYS -->
+        <div id="overlay-lobby" class="canvas-overlay overlay-lobby active">
+          <div class="overlay-inner lobby-overlay-inner">
+            <div class="lobby-icon">🎨</div>
+            <h2 id="lobby-title">Waiting for players...</h2>
+            <p id="lobby-subtitle" class="lobby-sub">Share the room code with friends!</p>
+            <div id="lobby-room-code" class="lobby-code"></div>
+            <div id="lobby-player-count" class="lobby-player-count"></div>
+            <button id="start-btn" class="btn-start hidden" onclick="startGame()">Start Game!</button>
+            <div id="lobby-settings-display" class="lobby-settings-display"></div>
+          </div>
+        </div>
+
+        <div id="overlay-word-selection" class="canvas-overlay hidden">
+          <div class="overlay-inner">
+            <!-- Drawer sees word choices -->
+            <div id="word-choice-panel" class="word-choice-panel hidden">
+              <h2 class="overlay-title">Choose a word to draw!</h2>
+              <div id="word-choices" class="word-choices"></div>
+            </div>
+            <!-- Others see "choosing" screen -->
+            <div id="word-waiting-panel" class="word-waiting-panel hidden">
+              <div class="choosing-spinner"></div>
+              <h2 class="overlay-title"><span id="drawer-name-choosing"></span> is choosing a word...</h2>
+            </div>
+          </div>
+        </div>
+
+        <div id="overlay-turn-over" class="canvas-overlay hidden">
+          <div class="overlay-inner">
+            <div class="turn-over-icon">🏁</div>
+            <h2 class="overlay-title">Turn Over!</h2>
+            <p class="turn-over-word">The word was: <strong id="revealed-word"></strong></p>
+            <div id="turn-scores-list" class="turn-scores-list"></div>
+          </div>
+        </div>
+
+        <div id="overlay-round-over" class="canvas-overlay hidden">
+          <div class="overlay-inner">
+            <div class="turn-over-icon">🔔</div>
+            <h2 class="overlay-title">Round <span id="round-over-num"></span> Complete!</h2>
+            <div id="round-scores-list" class="turn-scores-list"></div>
+          </div>
+        </div>
+
+        <div id="overlay-game-over" class="canvas-overlay hidden">
+          <div class="overlay-inner game-over-inner">
+            <h2 class="overlay-title game-over-title">🏆 Game Over!</h2>
+            <div id="podium" class="podium"></div>
+            <div id="final-scores" class="final-scores"></div>
+            <button class="btn-primary btn-play-again" onclick="leaveGame()">Back to Lobby</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- TOOL BELT -->
+      <div id="tool-belt" class="tool-belt hidden">
+        <div class="tool-section">
+          <button id="tool-pencil" class="tool-btn active" title="Pencil" onclick="setTool('pencil')">✏️</button>
+          <button id="tool-eraser" class="tool-btn" title="Eraser" onclick="setTool('eraser')">🧹</button>
+          <button id="tool-fill" class="tool-btn" title="Paint Bucket" onclick="setTool('fill')">🪣</button>
+          <button class="tool-btn tool-undo" title="Undo" onclick="doUndo()">↩️</button>
+          <button class="tool-btn tool-clear" title="Clear Canvas" onclick="doClear()">🗑️</button>
+        </div>
+        <div class="tool-section palette-section">
+          <div id="color-palette" class="color-palette"></div>
+          <input type="color" id="custom-color" class="custom-color-input" title="Custom color" />
+        </div>
+        <div class="tool-section size-section">
+          <span class="size-label">Size</span>
+          <input type="range" id="brush-size" class="brush-slider" min="2" max="40" value="6" />
+          <div id="brush-preview" class="brush-preview"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── RIGHT: CHAT ── -->
+    <aside class="chat-panel">
+      <div id="chat-log" class="chat-log"></div>
+      <div class="chat-input-row">
+        <input
+          id="chat-input"
+          type="text"
+          class="chat-input"
+          placeholder="Type your guess here..."
+          maxlength="120"
+          autocomplete="off"
+        />
+        <button class="chat-send-btn" onclick="sendChat()">➤</button>
+      </div>
+    </aside>
+  </main>
+
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="/js/socket.js"></script>
+  <script src="/js/canvas.js"></script>
+  <script src="/js/ui.js"></script>
+</body>
+</html>

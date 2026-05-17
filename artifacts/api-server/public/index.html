@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Skribbl Clone — Draw & Guess!</title>
+  <link rel="stylesheet" href="/css/style.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet" />
+</head>
+<body class="landing-body">
+  <div class="landing-bg">
+    <div class="landing-blob blob1"></div>
+    <div class="landing-blob blob2"></div>
+    <div class="landing-blob blob3"></div>
+  </div>
+
+  <div class="landing-container">
+    <header class="landing-header">
+      <div class="logo-mark">✏️</div>
+      <h1 class="logo-title">Skribbl<span class="logo-accent">!</span></h1>
+      <p class="logo-sub">Draw. Guess. Win.</p>
+    </header>
+
+    <div id="error-banner" class="error-banner hidden">
+      <span id="error-text"></span>
+      <button onclick="document.getElementById('error-banner').classList.add('hidden')">✕</button>
+    </div>
+
+    <div class="landing-card">
+      <!-- Avatar & Name Row -->
+      <div class="identity-row">
+        <div class="avatar-wrapper">
+          <canvas id="avatar-canvas" width="80" height="80"></canvas>
+          <button class="avatar-btn" onclick="randomizeAvatar()">🎲</button>
+        </div>
+        <div class="identity-fields">
+          <label class="field-label">Your Name</label>
+          <input
+            id="username-input"
+            type="text"
+            class="text-input"
+            placeholder="Enter username..."
+            maxlength="20"
+            autocomplete="off"
+          />
+        </div>
+      </div>
+
+      <!-- Tabs -->
+      <div class="tab-row">
+        <button class="tab-btn active" id="tab-create" onclick="switchTab('create')">Create Room</button>
+        <button class="tab-btn" id="tab-join" onclick="switchTab('join')">Join Room</button>
+      </div>
+
+      <!-- Create Room Panel -->
+      <div id="panel-create" class="tab-panel">
+        <div class="settings-grid">
+          <div class="setting-item">
+            <label class="field-label">Players</label>
+            <select id="setting-max-players" class="select-input">
+              <option value="4">4</option>
+              <option value="6">6</option>
+              <option value="8" selected>8</option>
+              <option value="10">10</option>
+              <option value="12">12</option>
+              <option value="16">16</option>
+              <option value="20">20</option>
+            </select>
+          </div>
+          <div class="setting-item">
+            <label class="field-label">Rounds</label>
+            <select id="setting-rounds" class="select-input">
+              <option value="1">1</option>
+              <option value="2">2</option>
+              <option value="3" selected>3</option>
+              <option value="4">4</option>
+              <option value="5">5</option>
+              <option value="6">6</option>
+              <option value="8">8</option>
+            </select>
+          </div>
+          <div class="setting-item">
+            <label class="field-label">Draw Time</label>
+            <select id="setting-draw-time" class="select-input">
+              <option value="30">30s</option>
+              <option value="45">45s</option>
+              <option value="60">60s</option>
+              <option value="80" selected>80s</option>
+              <option value="100">100s</option>
+              <option value="120">120s</option>
+              <option value="180">180s</option>
+            </select>
+          </div>
+          <div class="setting-item setting-toggle">
+            <label class="field-label">Public Room</label>
+            <label class="toggle-switch">
+              <input type="checkbox" id="setting-public" checked />
+              <span class="toggle-track"></span>
+            </label>
+          </div>
+        </div>
+        <button class="btn-primary" onclick="createRoom()">Create Room</button>
+      </div>
+
+      <!-- Join Room Panel -->
+      <div id="panel-join" class="tab-panel hidden">
+        <div class="join-row">
+          <input
+            id="room-code-input"
+            type="text"
+            class="text-input room-code-input"
+            placeholder="Enter room code..."
+            maxlength="6"
+            autocomplete="off"
+            oninput="this.value = this.value.toUpperCase()"
+          />
+        </div>
+        <button class="btn-primary" onclick="joinRoom()">Join Room</button>
+      </div>
+    </div>
+
+    <footer class="landing-footer">
+      <p>Inspired by skribbl.io — built for fun 🎨</p>
+    </footer>
+  </div>
+
+  <script src="/socket.io/socket.io.js"></script>
+  <script>
+    // ─── Avatar Generator ───────────────────────────────────────────────
+    let avatarColor = '#FF5733';
+    const AVATAR_COLORS = [
+      '#FF5733','#FF8C42','#FFC300','#2ECC71','#1ABC9C','#3498DB',
+      '#9B59B6','#E91E63','#00BCD4','#FF6B6B','#4ECDC4','#45B7D1',
+      '#96CEB4','#FFEAA7','#DDA0DD','#98D8C8','#F7DC6F','#BB8FCE',
+    ];
+
+    function randomizeAvatar() {
+      avatarColor = AVATAR_COLORS[Math.floor(Math.random() * AVATAR_COLORS.length)];
+      drawAvatar();
+    }
+
+    function drawAvatar() {
+      const canvas = document.getElementById('avatar-canvas');
+      const ctx = canvas.getContext('2d');
+      const w = canvas.width, h = canvas.height;
+      ctx.clearRect(0, 0, w, h);
+
+      ctx.beginPath();
+      ctx.arc(w/2, h/2, w/2, 0, Math.PI*2);
+      ctx.fillStyle = avatarColor;
+      ctx.fill();
+
+      ctx.fillStyle = 'rgba(255,255,255,0.9)';
+      ctx.font = `bold ${Math.floor(w*0.4)}px Nunito, sans-serif`;
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      const name = (document.getElementById('username-input').value || '?')[0].toUpperCase();
+      ctx.fillText(name, w/2, h/2 + 2);
+    }
+
+    document.getElementById('username-input').addEventListener('input', drawAvatar);
+    randomizeAvatar();
+
+    // ─── Tab Switcher ───────────────────────────────────────────────────
+    function switchTab(tab) {
+      document.getElementById('tab-create').classList.toggle('active', tab === 'create');
+      document.getElementById('tab-join').classList.toggle('active', tab === 'join');
+      document.getElementById('panel-create').classList.toggle('hidden', tab !== 'create');
+      document.getElementById('panel-join').classList.toggle('hidden', tab !== 'join');
+    }
+
+    // ─── Error Display ──────────────────────────────────────────────────
+    function showError(msg) {
+      document.getElementById('error-text').textContent = msg;
+      document.getElementById('error-banner').classList.remove('hidden');
+    }
+
+    function getIdentity() {
+      const username = document.getElementById('username-input').value.trim();
+      if (!username) { showError('Please enter a username.'); return null; }
+      return { username, avatarColor };
+    }
+
+    // ─── Socket & Room Actions ──────────────────────────────────────────
+    const socket = io();
+
+    socket.on('joined_room', ({ roomCode }) => {
+      sessionStorage.setItem('skribbl_room', roomCode);
+      window.location.href = '/game';
+    });
+
+    socket.on('error', ({ message }) => showError(message));
+
+    function createRoom() {
+      const identity = getIdentity();
+      if (!identity) return;
+      socket.emit('create_room', {
+        ...identity,
+        settings: {
+          maxPlayers: parseInt(document.getElementById('setting-max-players').value),
+          totalRounds: parseInt(document.getElementById('setting-rounds').value),
+          drawTime: parseInt(document.getElementById('setting-draw-time').value),
+        },
+        isPublic: document.getElementById('setting-public').checked,
+      });
+    }
+
+    function joinRoom() {
+      const identity = getIdentity();
+      if (!identity) return;
+      const roomCode = document.getElementById('room-code-input').value.trim().toUpperCase();
+      if (roomCode.length < 4) { showError('Please enter a valid room code.'); return; }
+      socket.emit('join_room', { ...identity, roomCode });
+    }
+
+    // ─── Keyboard Shortcuts ─────────────────────────────────────────────
+    document.getElementById('room-code-input').addEventListener('keydown', e => {
+      if (e.key === 'Enter') joinRoom();
+    });
+    document.getElementById('username-input').addEventListener('keydown', e => {
+      if (e.key === 'Enter') {
+        const tab = document.getElementById('panel-join').classList.contains('hidden') ? 'create' : 'join';
+        if (tab === 'create') createRoom(); else document.getElementById('room-code-input').focus();
+      }
+    });
+  </script>
+</body>
+</html>
