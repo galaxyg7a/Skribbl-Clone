@@ -655,12 +655,34 @@ const UI = (() => {
      INVITE LINK
   ══════════════════════════════════════════════════════════════════ */
   function updateInviteLink(roomCode) {
+    if (!roomCode) return;
+    const url = window.location.origin + '/?lobby=' + roomCode;
     const input   = document.getElementById('invite-link-input');
     const section = document.getElementById('invite-link-section');
-    if (!input || !roomCode) return;
-    input.value = window.location.origin + '/?lobby=' + roomCode;
+    if (input)   input.value = url;
     if (section) section.style.display = '';
   }
+
+  /* Wire up the copy button once DOM is ready */
+  document.addEventListener('DOMContentLoaded', () => {
+    const copyBtn = document.getElementById('invite-copy-btn');
+    if (copyBtn) {
+      copyBtn.addEventListener('click', () => {
+        const url = (document.getElementById('invite-link-input') || {}).value || '';
+        if (!url) return;
+        navigator.clipboard.writeText(url).catch(() => {
+          const inp = document.getElementById('invite-link-input');
+          if (inp) { inp.select(); document.execCommand('copy'); }
+        });
+        copyBtn.textContent = 'Copied!';
+        copyBtn.classList.add('copied');
+        setTimeout(() => {
+          copyBtn.textContent = 'Copy';
+          copyBtn.classList.remove('copied');
+        }, 1500);
+      });
+    }
+  });
 
   /* ══════════════════════════════════════════════════════════════════
      HOST BADGE

@@ -65,94 +65,79 @@
         <div id="overlay-lobby" class="canvas-overlay active">
           <div class="skribbl-lobby">
 
-            <!-- Invite Link Card (white) -->
-            <div class="invite-link-card" id="invite-link-section" style="display:none">
-              <span class="invite-card-title">🔗 Invite your friends!</span>
-              <div class="invite-link-row">
-                <input type="text" id="invite-link-input" class="invite-link-input" readonly />
-                <button class="invite-copy-btn" id="invite-copy-btn" onclick="copyInviteLink()">Copy</button>
-              </div>
+            <!-- Header ribbon -->
+            <div class="lobby-header-ribbon">
+              <span class="round-indicator">Round <span id="lobby-round-display">1</span> of <span id="lobby-round-total">3</span></span>
+              <span class="lobby-status-text">WAITING</span>
+              <div class="settings-gear-icon" onclick="UI.openSettingsModal()" style="cursor:pointer">⚙️</div>
             </div>
 
             <!-- Dark settings panel -->
             <div class="lobby-dark-panel">
-              <div class="lobby-grid">
-                <!-- Left column -->
-                <div>
-                  <div class="lob-row">
-                    <span class="lob-icon">👥</span>
-                    <span class="lob-label">Players</span>
-                    <select class="lob-select" id="lset-players" onchange="emitSettingChange()">
-                      <option value="2">2</option><option value="4">4</option>
-                      <option value="6">6</option><option value="8" selected>8</option>
-                      <option value="10">10</option><option value="12">12</option>
-                      <option value="16">16</option><option value="20">20</option>
-                    </select>
-                  </div>
-                  <div class="lob-row">
-                    <span class="lob-icon">🎨</span>
-                    <span class="lob-label">Drawtime</span>
-                    <select class="lob-select" id="lset-drawtime" onchange="emitSettingChange()">
-                      <option value="30">30</option><option value="45">45</option>
-                      <option value="60">60</option><option value="80" selected>80</option>
-                      <option value="100">100</option><option value="120">120</option>
-                      <option value="150">150</option><option value="180">180</option>
-                    </select>
-                  </div>
-                  <div class="lob-row">
-                    <span class="lob-icon">🎮</span>
-                    <span class="lob-label">Game Mode</span>
-                    <select class="lob-select" id="lset-gamemode">
-                      <option value="normal" selected>Normal</option>
-                      <option value="hidden">Hidden</option>
-                    </select>
-                  </div>
-                  <div class="lob-row">
-                    <span class="lob-icon">❓</span>
-                    <span class="lob-label">Hints</span>
-                    <select class="lob-select" id="lset-hints">
-                      <option value="0">0</option><option value="1">1</option>
-                      <option value="2" selected>2</option><option value="3">3</option>
-                      <option value="4">4</option>
-                    </select>
-                  </div>
+              <div class="lobby-settings-matrix">
+                <div class="settings-control-group">
+                  <label>👥 Players</label>
+                  <select class="lob-select" id="lset-players" onchange="emitSettingChange()">
+                    <option value="2">2</option><option value="4">4</option>
+                    <option value="6">6</option><option value="8" selected>8</option>
+                    <option value="10">10</option><option value="12">12</option>
+                    <option value="16">16</option><option value="20">20</option>
+                  </select>
                 </div>
-                <!-- Right column -->
-                <div>
-                  <div class="lob-row">
-                    <span class="lob-icon">🌐</span>
-                    <span class="lob-label">Language</span>
-                    <select class="lob-select" id="lset-language">
-                      <option value="en" selected>English</option>
-                      <option value="de">Deutsch</option>
-                      <option value="fr">Français</option>
-                      <option value="es">Español</option>
-                    </select>
-                  </div>
-                  <div class="lob-row">
-                    <span class="lob-icon">🔄</span>
-                    <span class="lob-label">Rounds</span>
-                    <select class="lob-select" id="lset-rounds" onchange="emitSettingChange()">
-                      <option value="2">2</option><option value="3" selected>3</option>
-                      <option value="4">4</option><option value="5">5</option>
-                      <option value="6">6</option><option value="8">8</option>
-                      <option value="10">10</option>
-                    </select>
-                  </div>
-                  <div class="lob-row">
-                    <span class="lob-icon">📝</span>
-                    <span class="lob-label">Word Count</span>
-                    <select class="lob-select" id="lset-wordcount">
-                      <option value="1">1</option><option value="2">2</option>
-                      <option value="3" selected>3</option><option value="4">4</option>
-                      <option value="5">5</option>
-                    </select>
-                  </div>
+                <div class="settings-control-group">
+                  <label>🌐 Language</label>
+                  <select class="lob-select" id="lset-language">
+                    <option value="en" selected>English</option>
+                    <option value="de">Deutsch</option>
+                    <option value="fr">Français</option>
+                    <option value="es">Español</option>
+                  </select>
+                </div>
+                <div class="settings-control-group">
+                  <label>⏱️ Drawtime</label>
+                  <select class="lob-select" id="lset-drawtime" onchange="emitSettingChange()">
+                    <option value="30">30</option><option value="45">45</option>
+                    <option value="60">60</option><option value="80" selected>80</option>
+                    <option value="100">100</option><option value="120">120</option>
+                    <option value="150">150</option><option value="180">180</option>
+                  </select>
+                </div>
+                <div class="settings-control-group">
+                  <label>🔄 Rounds</label>
+                  <select class="lob-select" id="lset-rounds" onchange="emitSettingChange()">
+                    <option value="2">2</option><option value="3" selected>3</option>
+                    <option value="4">4</option><option value="5">5</option>
+                    <option value="6">6</option><option value="8">8</option>
+                    <option value="10">10</option>
+                  </select>
+                </div>
+                <div class="settings-control-group">
+                  <label>🎮 Game Mode</label>
+                  <select class="lob-select" id="lset-gamemode">
+                    <option value="normal" selected>Normal</option>
+                    <option value="hidden">Hidden</option>
+                  </select>
+                </div>
+                <div class="settings-control-group">
+                  <label>📝 Word Count</label>
+                  <select class="lob-select" id="lset-wordcount">
+                    <option value="1">1</option><option value="2">2</option>
+                    <option value="3" selected>3</option><option value="4">4</option>
+                    <option value="5">5</option>
+                  </select>
+                </div>
+                <div class="settings-control-group full-width-row">
+                  <label>❓ Hints</label>
+                  <select class="lob-select" id="lset-hints">
+                    <option value="0">0</option><option value="1">1</option>
+                    <option value="2" selected>2</option><option value="3">3</option>
+                    <option value="4">4</option>
+                  </select>
                 </div>
               </div>
 
               <!-- Custom words -->
-              <div class="cw-section">
+              <div class="lobby-custom-words-container">
                 <div class="cw-header">
                   <span class="cw-title">Custom words</span>
                   <label class="cw-toggle">
@@ -160,15 +145,24 @@
                     Use custom words only
                   </label>
                 </div>
-                <textarea id="custom-words-input" class="cw-textarea"
+                <textarea id="custom-words-input" class="cw-lobby-textarea"
                   placeholder="Minimum of 10 words. 1-32 characters per word! 20000 characters maximum. Separated by a , (comma)"></textarea>
               </div>
             </div>
 
-            <!-- Action bar -->
-            <div class="lobby-action-bar">
-              <button id="start-btn" class="btn-start hidden" onclick="startGame()">Start!</button>
-              <span id="lobby-host-badge" class="lobby-host-badge hidden"></span>
+            <!-- Invite link banner -->
+            <div class="lobby-invite-link-banner" id="invite-link-section">
+              <label class="invite-title">Invite your friends!</label>
+              <div class="invite-input-row">
+                <input type="text" id="invite-link-input" class="lobby-invite-input" readonly value="" />
+                <button type="button" id="invite-copy-btn" onclick="copyInviteLink()">Copy</button>
+              </div>
+            </div>
+
+            <!-- Action footer -->
+            <div class="lobby-action-control-footer">
+              <button id="start-btn" class="skribbl-green-start-btn hidden" onclick="startGame()">Start!</button>
+              <span id="lobby-host-badge" class="skribbl-blue-owner-badge hidden"></span>
             </div>
 
             <!-- Hidden compat elements -->
