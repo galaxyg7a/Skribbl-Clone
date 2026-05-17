@@ -24,6 +24,8 @@ async function buildAll() {
     logLevel: "info",
     external: [
       "*.node",
+      "socket.io",
+      "engine.io",
       "sharp",
       "better-sqlite3",
       "sqlite3",
