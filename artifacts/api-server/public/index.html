@@ -3,227 +3,437 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Skribbl Clone — Draw & Guess!</title>
+  <title>INKSHOT — Draw &amp; Guess!</title>
   <link rel="stylesheet" href="/css/style.css" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet" />
 </head>
-<body class="landing-body">
-  <div class="landing-bg">
-    <div class="landing-blob blob1"></div>
-    <div class="landing-blob blob2"></div>
-    <div class="landing-blob blob3"></div>
+<body class="landing-body skribbl-bg">
+
+  <div id="error-banner" class="error-banner hidden">
+    <span id="error-text"></span>
+    <button onclick="document.getElementById('error-banner').classList.add('hidden')">✕</button>
   </div>
 
-  <div class="landing-container">
-    <header class="landing-header">
-      <div class="logo-mark">✏️</div>
-      <h1 class="logo-title">Skribbl<span class="logo-accent">!</span></h1>
-      <p class="logo-sub">Draw. Guess. Win.</p>
-    </header>
+  <!-- LOGO -->
+  <div class="logo-area">
+    <span class="logo-text">
+      <span class="l1">s</span><span class="l2">k</span><span class="l3">r</span><span class="l4">i</span><span class="l5">b</span><span class="l6">b</span><span class="l7">l</span><span class="l8">.</span><span class="l9">i</span><span class="l10">o</span><span class="pencil">✏</span>
+    </span>
+    <!-- Avatar parade (decorative) -->
+    <div class="avatar-parade" id="avatar-parade"></div>
+  </div>
 
-    <div id="error-banner" class="error-banner hidden">
-      <span id="error-text"></span>
-      <button onclick="document.getElementById('error-banner').classList.add('hidden')">✕</button>
+  <!-- MAIN CARD -->
+  <div class="landing-card">
+
+    <!-- Name + Language Row -->
+    <div class="top-fields-row">
+      <input
+        id="username-input"
+        type="text"
+        class="username-input"
+        placeholder="Name..."
+        maxlength="20"
+        autocomplete="off"
+      />
+      <select id="lang-select" class="lang-select">
+        <option value="en">English</option>
+        <option value="de">Deutsch</option>
+        <option value="fr">Français</option>
+        <option value="es">Español</option>
+        <option value="pt">Português</option>
+        <option value="it">Italiano</option>
+        <option value="pl">Polski</option>
+        <option value="tr">Türkçe</option>
+        <option value="ru">Русский</option>
+      </select>
     </div>
 
-    <div class="landing-card">
-      <!-- Avatar & Name Row -->
-      <div class="identity-row">
-        <div class="avatar-wrapper">
-          <canvas id="avatar-canvas" width="80" height="80"></canvas>
-          <button class="avatar-btn" onclick="randomizeAvatar()">🎲</button>
-        </div>
-        <div class="identity-fields">
-          <label class="field-label">Your Name</label>
-          <input
-            id="username-input"
-            type="text"
-            class="text-input"
-            placeholder="Enter username..."
-            maxlength="20"
-            autocomplete="off"
-          />
+    <!-- Avatar Customizer -->
+    <div class="avatar-customizer">
+      <!-- Left arrows -->
+      <div class="arrow-col">
+        <button class="arrow-btn" onclick="cycleEye(-1)" title="Previous eyes">&lt;</button>
+        <button class="arrow-btn" onclick="cycleMouth(-1)" title="Previous mouth">&lt;</button>
+        <button class="arrow-btn" onclick="cycleBody(-1)" title="Previous body">&lt;</button>
+      </div>
+
+      <!-- Avatar display (SVG-based — pre-rendered default, JS updates on interaction) -->
+      <div class="avatar-canvas-wrap">
+        <div id="avatar-display" style="width:80px;height:80px;border:3px solid rgba(255,255,255,0.5);border-radius:8px;overflow:hidden;display:block;">
+          <svg width="80" height="80" viewBox="0 0 80 80" xmlns="http://www.w3.org/2000/svg">
+            <rect width="80" height="80" fill="#E76F51"/>
+            <rect x="11" y="6" width="58" height="45" fill="#F4A261"/>
+            <rect x="18" y="28" width="12" height="9" fill="white"/>
+            <rect x="50" y="28" width="12" height="9" fill="white"/>
+            <rect x="21" y="30" width="6" height="6" fill="#111"/>
+            <rect x="53" y="30" width="6" height="6" fill="#111"/>
+            <rect x="23" y="31" width="2" height="2" fill="white"/>
+            <rect x="55" y="31" width="2" height="2" fill="white"/>
+            <rect x="22" y="52" width="36" height="10" fill="#c0392b"/>
+            <rect x="25" y="53" width="6" height="7" fill="white"/>
+            <rect x="33" y="53" width="6" height="7" fill="white"/>
+            <rect x="41" y="53" width="6" height="7" fill="white"/>
+            <rect x="22" y="59" width="36" height="3" fill="#c0392b"/>
+          </svg>
         </div>
       </div>
 
-      <!-- Tabs -->
-      <div class="tab-row">
-        <button class="tab-btn active" id="tab-create" onclick="switchTab('create')">Create Room</button>
-        <button class="tab-btn" id="tab-join" onclick="switchTab('join')">Join Room</button>
+      <!-- Right arrows -->
+      <div class="arrow-col">
+        <button class="arrow-btn" onclick="cycleEye(1)" title="Next eyes">&gt;</button>
+        <button class="arrow-btn" onclick="cycleMouth(1)" title="Next mouth">&gt;</button>
+        <button class="arrow-btn" onclick="cycleBody(1)" title="Next body">&gt;</button>
       </div>
 
-      <!-- Create Room Panel -->
-      <div id="panel-create" class="tab-panel">
-        <div class="settings-grid">
-          <div class="setting-item">
-            <label class="field-label">Players</label>
-            <select id="setting-max-players" class="select-input">
-              <option value="4">4</option>
-              <option value="6">6</option>
-              <option value="8" selected>8</option>
-              <option value="10">10</option>
-              <option value="12">12</option>
-              <option value="16">16</option>
-              <option value="20">20</option>
-            </select>
-          </div>
-          <div class="setting-item">
-            <label class="field-label">Rounds</label>
-            <select id="setting-rounds" class="select-input">
-              <option value="1">1</option>
-              <option value="2">2</option>
-              <option value="3" selected>3</option>
-              <option value="4">4</option>
-              <option value="5">5</option>
-              <option value="6">6</option>
-              <option value="8">8</option>
-            </select>
-          </div>
-          <div class="setting-item">
-            <label class="field-label">Draw Time</label>
-            <select id="setting-draw-time" class="select-input">
-              <option value="30">30s</option>
-              <option value="45">45s</option>
-              <option value="60">60s</option>
-              <option value="80" selected>80s</option>
-              <option value="100">100s</option>
-              <option value="120">120s</option>
-              <option value="180">180s</option>
-            </select>
-          </div>
-          <div class="setting-item setting-toggle">
-            <label class="field-label">Public Room</label>
-            <label class="toggle-switch">
-              <input type="checkbox" id="setting-public" checked />
-              <span class="toggle-track"></span>
-            </label>
-          </div>
-        </div>
-        <button class="btn-primary" onclick="createRoom()">Create Room</button>
-      </div>
-
-      <!-- Join Room Panel -->
-      <div id="panel-join" class="tab-panel hidden">
-        <div class="join-row">
-          <input
-            id="room-code-input"
-            type="text"
-            class="text-input room-code-input"
-            placeholder="Enter room code..."
-            maxlength="6"
-            autocomplete="off"
-            oninput="this.value = this.value.toUpperCase()"
-          />
-        </div>
-        <button class="btn-primary" onclick="joinRoom()">Join Room</button>
+      <!-- Dice -->
+      <div class="dice-wrap">
+        <button class="dice-btn" onclick="randomizeAvatar()" title="Random avatar">🎲</button>
       </div>
     </div>
 
-    <footer class="landing-footer">
-      <p>Inspired by skribbl.io — built for fun 🎨</p>
-    </footer>
+    <!-- Play! Button -->
+    <button class="btn-play" onclick="playPublic()">Play!</button>
+
+    <!-- Create Private Room -->
+    <button class="btn-private" onclick="createPrivateRoom()">Create Private Room</button>
+
+    <!-- Join with code -->
+    <div class="join-section">
+      <input
+        id="room-code-input"
+        type="text"
+        class="join-code-input"
+        placeholder="Enter room code..."
+        maxlength="6"
+        autocomplete="off"
+        oninput="this.value = this.value.toUpperCase()"
+      />
+      <button class="btn-join" onclick="joinRoom()">Join →</button>
+    </div>
+
   </div>
 
   <script src="/socket.io/socket.io.js"></script>
   <script>
-    // ─── Avatar Generator ───────────────────────────────────────────────
-    let avatarColor = '#FF5733';
-    const AVATAR_COLORS = [
-      '#FF5733','#FF8C42','#FFC300','#2ECC71','#1ABC9C','#3498DB',
-      '#9B59B6','#E91E63','#00BCD4','#FF6B6B','#4ECDC4','#45B7D1',
-      '#96CEB4','#FFEAA7','#DDA0DD','#98D8C8','#F7DC6F','#BB8FCE',
-    ];
+  /* ─── Avatar System ───────────────────────────────────────────── */
+  let eyeIndex   = 0;
+  let mouthIndex = 0;
+  let bodyIndex  = 0;
 
-    function randomizeAvatar() {
-      avatarColor = AVATAR_COLORS[Math.floor(Math.random() * AVATAR_COLORS.length)];
-      drawAvatar();
-    }
+  const BODY_SCHEMES = [
+    { face: '#F4A261', body: '#E76F51', stripe: '#c45a30' },
+    { face: '#FFDDB3', body: '#d4a574', stripe: '#a0725a' },
+    { face: '#8D5524', body: '#6B3A1A', stripe: '#4a2210' },
+    { face: '#3498DB', body: '#2060a0', stripe: '#1a4578' },
+    { face: '#9B59B6', body: '#7D3C98', stripe: '#5c2a72' },
+    { face: '#2ECC71', body: '#1a9950', stripe: '#126e38' },
+    { face: '#E74C3C', body: '#c0392b', stripe: '#8e2218' },
+    { face: '#F39C12', body: '#d48010', stripe: '#a05e08' },
+    { face: '#1ABC9C', body: '#16a085', stripe: '#0d7560' },
+  ];
 
-    function drawAvatar() {
-      const canvas = document.getElementById('avatar-canvas');
-      const ctx = canvas.getContext('2d');
-      const w = canvas.width, h = canvas.height;
-      ctx.clearRect(0, 0, w, h);
-
+  const EYE_FNS = [
+    // Normal eyes
+    function(ctx, W, H) {
+      const ey = H * 0.36;
+      ctx.fillStyle = 'white';
+      ctx.fillRect(W*0.22, ey, 14, 11);
+      ctx.fillRect(W*0.55, ey, 14, 11);
+      ctx.fillStyle = '#111';
+      ctx.fillRect(W*0.26, ey+2, 7, 7);
+      ctx.fillRect(W*0.59, ey+2, 7, 7);
+      ctx.fillStyle = 'white';
+      ctx.fillRect(W*0.28, ey+3, 2, 2);
+      ctx.fillRect(W*0.61, ey+3, 2, 2);
+    },
+    // Sunglasses
+    function(ctx, W, H) {
+      const ey = H * 0.36;
+      ctx.fillStyle = '#111';
+      ctx.fillRect(W*0.20, ey-1, 17, 13);
+      ctx.fillRect(W*0.54, ey-1, 17, 13);
+      ctx.fillStyle = '#333';
+      ctx.fillRect(W*0.37, ey+2, W*0.17, 5);
+      ctx.fillStyle = 'rgba(255,255,255,0.18)';
+      ctx.fillRect(W*0.22, ey+1, 6, 4);
+      ctx.fillRect(W*0.56, ey+1, 6, 4);
+    },
+    // Worried eyes
+    function(ctx, W, H) {
+      const ey = H * 0.36;
+      ctx.fillStyle = 'white';
+      ctx.fillRect(W*0.22, ey, 14, 10);
+      ctx.fillRect(W*0.55, ey, 14, 10);
+      ctx.fillStyle = '#111';
+      ctx.fillRect(W*0.26, ey+2, 6, 6);
+      ctx.fillRect(W*0.59, ey+2, 6, 6);
+      ctx.strokeStyle = '#333';
+      ctx.lineWidth = 2.5;
       ctx.beginPath();
-      ctx.arc(w/2, h/2, w/2, 0, Math.PI*2);
-      ctx.fillStyle = avatarColor;
-      ctx.fill();
-
-      ctx.fillStyle = 'rgba(255,255,255,0.9)';
-      ctx.font = `bold ${Math.floor(w*0.4)}px Nunito, sans-serif`;
+      ctx.moveTo(W*0.21, ey-6); ctx.lineTo(W*0.36, ey-2);
+      ctx.moveTo(W*0.54, ey-2); ctx.lineTo(W*0.70, ey-6);
+      ctx.stroke();
+    },
+    // Star eyes
+    function(ctx, W, H) {
+      const ey = H * 0.34;
+      ctx.fillStyle = 'white';
+      ctx.fillRect(W*0.20, ey, 16, 14);
+      ctx.fillRect(W*0.54, ey, 16, 14);
+      ctx.fillStyle = '#FFD700';
+      ctx.font = 'bold 11px sans-serif';
       ctx.textAlign = 'center';
-      ctx.textBaseline = 'middle';
-      const name = (document.getElementById('username-input').value || '?')[0].toUpperCase();
-      ctx.fillText(name, w/2, h/2 + 2);
-    }
+      ctx.fillText('★', W*0.29, ey+11);
+      ctx.fillText('★', W*0.63, ey+11);
+    },
+  ];
 
-    document.getElementById('username-input').addEventListener('input', drawAvatar);
-    randomizeAvatar();
-
-    // ─── Tab Switcher ───────────────────────────────────────────────────
-    function switchTab(tab) {
-      document.getElementById('tab-create').classList.toggle('active', tab === 'create');
-      document.getElementById('tab-join').classList.toggle('active', tab === 'join');
-      document.getElementById('panel-create').classList.toggle('hidden', tab !== 'create');
-      document.getElementById('panel-join').classList.toggle('hidden', tab !== 'join');
-    }
-
-    // ─── Error Display ──────────────────────────────────────────────────
-    function showError(msg) {
-      document.getElementById('error-text').textContent = msg;
-      document.getElementById('error-banner').classList.remove('hidden');
-    }
-
-    function getIdentity() {
-      const username = document.getElementById('username-input').value.trim();
-      if (!username) { showError('Please enter a username.'); return null; }
-      return { username, avatarColor };
-    }
-
-    // ─── Socket & Room Actions ──────────────────────────────────────────
-    const socket = io();
-
-    socket.on('joined_room', ({ roomCode }) => {
-      sessionStorage.setItem('skribbl_room', roomCode);
-      window.location.href = '/game';
-    });
-
-    socket.on('error', ({ message }) => showError(message));
-
-    function createRoom() {
-      const identity = getIdentity();
-      if (!identity) return;
-      socket.emit('create_room', {
-        ...identity,
-        settings: {
-          maxPlayers: parseInt(document.getElementById('setting-max-players').value),
-          totalRounds: parseInt(document.getElementById('setting-rounds').value),
-          drawTime: parseInt(document.getElementById('setting-draw-time').value),
-        },
-        isPublic: document.getElementById('setting-public').checked,
-      });
-    }
-
-    function joinRoom() {
-      const identity = getIdentity();
-      if (!identity) return;
-      const roomCode = document.getElementById('room-code-input').value.trim().toUpperCase();
-      if (roomCode.length < 4) { showError('Please enter a valid room code.'); return; }
-      socket.emit('join_room', { ...identity, roomCode });
-    }
-
-    // ─── Keyboard Shortcuts ─────────────────────────────────────────────
-    document.getElementById('room-code-input').addEventListener('keydown', e => {
-      if (e.key === 'Enter') joinRoom();
-    });
-    document.getElementById('username-input').addEventListener('keydown', e => {
-      if (e.key === 'Enter') {
-        const tab = document.getElementById('panel-join').classList.contains('hidden') ? 'create' : 'join';
-        if (tab === 'create') createRoom(); else document.getElementById('room-code-input').focus();
+  const MOUTH_FNS = [
+    // Big smile
+    function(ctx, W, H) {
+      const my = H * 0.61;
+      ctx.fillStyle = '#c0392b';
+      ctx.fillRect(W*0.25, my, 30, 12);
+      ctx.fillStyle = 'white';
+      for (let i = 0; i < 4; i++) {
+        ctx.fillRect(W*0.26 + i*7, my+1, 5, 7);
       }
+      ctx.fillStyle = '#c0392b';
+      ctx.fillRect(W*0.25, my+8, 30, 4);
+    },
+    // Frown
+    function(ctx, W, H) {
+      const my = H * 0.65;
+      ctx.fillStyle = '#c0392b';
+      ctx.fillRect(W*0.28, my, 24, 9);
+      ctx.fillStyle = 'white';
+      ctx.fillRect(W*0.30, my+1, 20, 4);
+      ctx.fillStyle = '#c0392b';
+      ctx.fillRect(W*0.25, my-5, 30, 6);
+    },
+    // Grin
+    function(ctx, W, H) {
+      const my = H * 0.60;
+      ctx.fillStyle = '#c0392b';
+      ctx.fillRect(W*0.22, my, 36, 14);
+      ctx.fillStyle = 'white';
+      for (let i = 0; i < 5; i++) {
+        ctx.fillRect(W*0.23 + i*6.5, my+1, 5, 8);
+      }
+      ctx.fillStyle = '#c0392b';
+      ctx.fillRect(W*0.22, my+9, 36, 5);
+    },
+    // O mouth
+    function(ctx, W, H) {
+      const my = H * 0.62;
+      ctx.fillStyle = '#c0392b';
+      ctx.beginPath();
+      ctx.ellipse(W*0.5, my, 10, 12, 0, 0, Math.PI*2);
+      ctx.fill();
+      ctx.fillStyle = '#800';
+      ctx.beginPath();
+      ctx.ellipse(W*0.5, my+1, 6, 8, 0, 0, Math.PI*2);
+      ctx.fill();
+    },
+  ];
+
+  /* Eye SVG snippets [4 styles] */
+  const EYE_SVG = [
+    // Normal
+    s => `<rect x="18" y="28" width="12" height="9" fill="white"/>
+          <rect x="50" y="28" width="12" height="9" fill="white"/>
+          <rect x="21" y="30" width="6" height="6" fill="#111"/>
+          <rect x="53" y="30" width="6" height="6" fill="#111"/>
+          <rect x="23" y="31" width="2" height="2" fill="white"/>
+          <rect x="55" y="31" width="2" height="2" fill="white"/>`,
+    // Sunglasses
+    s => `<rect x="16" y="27" width="16" height="10" fill="#111"/>
+          <rect x="48" y="27" width="16" height="10" fill="#111"/>
+          <rect x="32" y="29" width="16" height="4" fill="#111"/>
+          <rect x="17" y="28" width="6" height="3" fill="rgba(255,255,255,0.2)"/>
+          <rect x="49" y="28" width="6" height="3" fill="rgba(255,255,255,0.2)"/>`,
+    // Worried
+    s => `<rect x="18" y="29" width="12" height="8" fill="white"/>
+          <rect x="50" y="29" width="12" height="8" fill="white"/>
+          <rect x="21" y="31" width="6" height="5" fill="#111"/>
+          <rect x="53" y="31" width="6" height="5" fill="#111"/>
+          <line x1="17" y1="23" x2="30" y2="27" stroke="#333" stroke-width="2.5" stroke-linecap="round"/>
+          <line x1="50" y1="27" x2="63" y2="23" stroke="#333" stroke-width="2.5" stroke-linecap="round"/>`,
+    // Happy squint
+    s => `<rect x="18" y="28" width="12" height="5" fill="white"/>
+          <rect x="50" y="28" width="12" height="5" fill="white"/>
+          <rect x="18" y="24" width="12" height="5" fill="${s.face}"/>
+          <rect x="50" y="24" width="12" height="5" fill="${s.face}"/>`,
+  ];
+
+  /* Mouth SVG snippets [4 styles] */
+  const MOUTH_SVG = [
+    // Big smile
+    s => `<rect x="22" y="52" width="36" height="10" fill="#c0392b"/>
+          <rect x="25" y="53" width="6" height="7" fill="white"/>
+          <rect x="33" y="53" width="6" height="7" fill="white"/>
+          <rect x="41" y="53" width="6" height="7" fill="white"/>
+          <rect x="22" y="59" width="36" height="3" fill="#c0392b"/>`,
+    // Frown
+    s => `<rect x="26" y="56" width="28" height="8" fill="#c0392b"/>
+          <rect x="29" y="57" width="22" height="4" fill="white"/>
+          <rect x="22" y="50" width="36" height="7" fill="${s.face}"/>`,
+    // Grin (big)
+    s => `<rect x="18" y="50" width="44" height="12" fill="#c0392b"/>
+          <rect x="20" y="51" width="6" height="8" fill="white"/>
+          <rect x="28" y="51" width="6" height="8" fill="white"/>
+          <rect x="36" y="51" width="6" height="8" fill="white"/>
+          <rect x="44" y="51" width="6" height="8" fill="white"/>
+          <rect x="18" y="58" width="44" height="4" fill="#c0392b"/>`,
+    // O mouth
+    s => `<ellipse cx="40" cy="55" rx="8" ry="10" fill="#c0392b"/>
+          <ellipse cx="40" cy="56" rx="5" ry="7" fill="#800000"/>`,
+  ];
+
+  function makeAvatarSVG(s, ei, mi, W, H) {
+    return `<svg width="${W}" height="${H}" viewBox="0 0 80 80" xmlns="http://www.w3.org/2000/svg">
+      <rect width="80" height="80" fill="${s.body}"/>
+      <rect x="11" y="6" width="58" height="45" fill="${s.face}"/>
+      <rect x="11" y="6" width="58" height="45" fill="rgba(0,0,0,0.06)"/>
+      <rect x="11" y="6" width="58" height="45" fill="${s.face}"/>
+      ${s.stripe ? `<rect x="24" y="53" width="32" height="8" fill="${s.stripe}"/>` : ''}
+      ${EYE_SVG[ei % EYE_SVG.length](s)}
+      ${MOUTH_SVG[mi % MOUTH_SVG.length](s)}
+      <rect x="11" y="6" width="58" height="45" fill="none" stroke="rgba(0,0,0,0.1)" stroke-width="1"/>
+    </svg>`;
+  }
+
+  function drawAvatar() {
+    const el = document.getElementById('avatar-display');
+    if (!el) return;
+    const s = BODY_SCHEMES[bodyIndex % BODY_SCHEMES.length];
+    el.innerHTML = makeAvatarSVG(s, eyeIndex, mouthIndex, 80, 80);
+  }
+
+  function cycleEye(dir) {
+    eyeIndex = (eyeIndex + dir + EYE_FNS.length) % EYE_FNS.length;
+    drawAvatar();
+  }
+  function cycleMouth(dir) {
+    mouthIndex = (mouthIndex + dir + MOUTH_FNS.length) % MOUTH_FNS.length;
+    drawAvatar();
+  }
+  function cycleBody(dir) {
+    bodyIndex = (bodyIndex + dir + BODY_SCHEMES.length) % BODY_SCHEMES.length;
+    drawAvatar();
+  }
+  function randomizeAvatar() {
+    eyeIndex   = Math.floor(Math.random() * EYE_FNS.length);
+    mouthIndex = Math.floor(Math.random() * MOUTH_FNS.length);
+    bodyIndex  = Math.floor(Math.random() * BODY_SCHEMES.length);
+    drawAvatar();
+  }
+
+  function getAvatarColor() {
+    return BODY_SCHEMES[bodyIndex % BODY_SCHEMES.length].face;
+  }
+  function getAvatarData() {
+    return { eyeIndex, mouthIndex, bodyIndex };
+  }
+
+  /* ─── Parade (decorative header avatars) ─────────────────────── */
+  function buildParade() {
+    const parade = document.getElementById('avatar-parade');
+    const colors = BODY_SCHEMES.map(s => s.face);
+    colors.forEach((color, ci) => {
+      const c = document.createElement('canvas');
+      c.width = 42; c.height = 42;
+      c.className = 'parade-avatar';
+      const ctx = c.getContext('2d');
+      const s = BODY_SCHEMES[ci];
+      // Body
+      ctx.fillStyle = s.body;
+      ctx.fillRect(0, 26, 42, 16);
+      // Face
+      ctx.fillStyle = s.face;
+      ctx.fillRect(6, 4, 30, 24);
+      // Eyes
+      ctx.fillStyle = 'white';
+      ctx.fillRect(9, 10, 6, 5);
+      ctx.fillRect(27, 10, 6, 5);
+      ctx.fillStyle = '#111';
+      ctx.fillRect(10, 11, 3, 3);
+      ctx.fillRect(28, 11, 3, 3);
+      // Smile
+      ctx.fillStyle = '#c0392b';
+      ctx.fillRect(12, 21, 18, 5);
+      ctx.fillStyle = 'white';
+      ctx.fillRect(14, 22, 14, 2);
+      parade.appendChild(c);
     });
+  }
+
+  /* ─── Error ───────────────────────────────────────────────────── */
+  function showError(msg) {
+    document.getElementById('error-text').textContent = msg;
+    document.getElementById('error-banner').classList.remove('hidden');
+  }
+
+  function getIdentity() {
+    const username = document.getElementById('username-input').value.trim();
+    if (!username) { showError('Please enter a name!'); return null; }
+    return {
+      username,
+      avatarColor: getAvatarColor(),
+      avatarData: getAvatarData(),
+    };
+  }
+
+  /* ─── Socket ──────────────────────────────────────────────────── */
+  const socket = io();
+
+  socket.on('joined_room', ({ roomCode }) => {
+    sessionStorage.setItem('skribbl_room', roomCode);
+    window.location.href = '/game';
+  });
+  socket.on('error', ({ message }) => showError(message));
+
+  function playPublic() {
+    const identity = getIdentity();
+    if (!identity) return;
+    socket.emit('create_room', {
+      ...identity,
+      settings: { maxPlayers: 8, totalRounds: 3, drawTime: 80 },
+      isPublic: true,
+    });
+  }
+
+  function createPrivateRoom() {
+    const identity = getIdentity();
+    if (!identity) return;
+    socket.emit('create_room', {
+      ...identity,
+      settings: { maxPlayers: 8, totalRounds: 3, drawTime: 80 },
+      isPublic: false,
+    });
+  }
+
+  function joinRoom() {
+    const identity = getIdentity();
+    if (!identity) return;
+    const roomCode = document.getElementById('room-code-input').value.trim().toUpperCase();
+    if (roomCode.length < 4) { showError('Enter a valid room code.'); return; }
+    socket.emit('join_room', { ...identity, roomCode });
+  }
+
+  /* ─── Keyboard shortcuts ──────────────────────────────────────── */
+  document.getElementById('room-code-input').addEventListener('keydown', e => {
+    if (e.key === 'Enter') joinRoom();
+  });
+  document.getElementById('username-input').addEventListener('keydown', e => {
+    if (e.key === 'Enter') playPublic();
+  });
+
+  /* ─── Init ────────────────────────────────────────────────────── */
+  randomizeAvatar();
+  buildParade();
   </script>
 </body>
 </html>
