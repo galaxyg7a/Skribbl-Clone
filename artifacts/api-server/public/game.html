@@ -47,7 +47,7 @@
   </header>
 
   <!-- ══════════════════════════════════════════
-       LOBBY SCREEN — full 3-column, shown while waiting
+       LOBBY SCREEN — 3-column skribbl-style layout
   ══════════════════════════════════════════ -->
   <div id="lobby-screen" class="lobby-full-screen hidden">
 
@@ -62,16 +62,16 @@
 
       <!-- Header ribbon -->
       <div class="lobby-header-ribbon">
-        <span class="round-indicator">Round 1 of <span id="lobby-round-total">3</span></span>
+        <span>Round 1 of <span id="lobby-round-total">3</span></span>
         <span class="lobby-status-text">WAITING</span>
-        <div onclick="UI.openSettingsModal()" style="cursor:pointer" title="Settings">⚙️</div>
+        <span onclick="UI.openSettingsModal()" style="cursor:pointer;font-size:1rem;" title="Settings">⚙</span>
       </div>
 
       <!-- Settings grid -->
       <div class="lobby-dark-panel">
         <div class="lobby-settings-matrix">
           <div class="settings-control-group">
-            <label>👥 Players</label>
+            <label>Players</label>
             <select class="lob-select" id="lset-players" onchange="emitSettingChange()">
               <option value="2">2</option><option value="4">4</option>
               <option value="6">6</option><option value="8" selected>8</option>
@@ -80,7 +80,7 @@
             </select>
           </div>
           <div class="settings-control-group">
-            <label>🌐 Language</label>
+            <label>Language</label>
             <select class="lob-select" id="lset-language">
               <option value="en" selected>English</option>
               <option value="de">Deutsch</option>
@@ -89,7 +89,7 @@
             </select>
           </div>
           <div class="settings-control-group">
-            <label>⏱️ Drawtime</label>
+            <label>Drawtime</label>
             <select class="lob-select" id="lset-drawtime" onchange="emitSettingChange()">
               <option value="30">30</option><option value="45">45</option>
               <option value="60">60</option><option value="80" selected>80</option>
@@ -98,7 +98,7 @@
             </select>
           </div>
           <div class="settings-control-group">
-            <label>🔄 Rounds</label>
+            <label>Rounds</label>
             <select class="lob-select" id="lset-rounds" onchange="emitSettingChange()">
               <option value="2">2</option><option value="3" selected>3</option>
               <option value="4">4</option><option value="5">5</option>
@@ -107,14 +107,14 @@
             </select>
           </div>
           <div class="settings-control-group">
-            <label>🎮 Game Mode</label>
+            <label>Game Mode</label>
             <select class="lob-select" id="lset-gamemode">
               <option value="normal" selected>Normal</option>
               <option value="hidden">Hidden</option>
             </select>
           </div>
           <div class="settings-control-group">
-            <label>📝 Word Count</label>
+            <label>Word Count</label>
             <select class="lob-select" id="lset-wordcount">
               <option value="1">1</option><option value="2">2</option>
               <option value="3" selected>3</option><option value="4">4</option>
@@ -122,7 +122,7 @@
             </select>
           </div>
           <div class="settings-control-group full-width-row">
-            <label>❓ Hints</label>
+            <label>Hints</label>
             <select class="lob-select" id="lset-hints">
               <option value="0">0</option><option value="1">1</option>
               <option value="2" selected>2</option><option value="3">3</option>
@@ -170,12 +170,13 @@
 
     <!-- RIGHT: Chat -->
     <div class="lfs-col lfs-chat">
+      <div class="lfs-col-title">Chat</div>
       <div id="lobby-chat-log" class="chat-log"></div>
       <div class="chat-input-wrap">
         <input
           id="lobby-chat-input"
           type="text"
-          placeholder="Type your guess here..."
+          placeholder="Type a message..."
           maxlength="120"
           autocomplete="off"
           onkeydown="if(event.key==='Enter') sendChatFromLobby()"

@@ -361,6 +361,7 @@ const UI = (() => {
       const rank = idx + 1;
       const card = document.createElement('div');
       card.className = 'player-card' +
+        (p.isHost     ? ' is-host'     : '') +
         (p.isDrawing  ? ' is-drawing'  : '') +
         (p.hasGuessed ? ' has-guessed' : '');
       card.id    = 'player-card-' + p.id;
@@ -370,10 +371,6 @@ const UI = (() => {
       const rankEl = document.createElement('span');
       rankEl.className = 'player-rank';
       rankEl.textContent = '#' + rank;
-
-      const crownEl = document.createElement('span');
-      crownEl.className = 'player-crown';
-      crownEl.textContent = p.isHost ? '👑' : '';
 
       const info = document.createElement('div');
       info.className = 'player-card-info';
@@ -404,15 +401,7 @@ const UI = (() => {
       avatarWrap.appendChild(c);
       renderSkribblAvatar(c, getAvatarFeatures(p.id, p.avatarColor, p.avatarData));
 
-      if (p.isHost) {
-        const crownOverlay = document.createElement('span');
-        crownOverlay.className = 'avatar-crown-overlay';
-        crownOverlay.textContent = '👑';
-        avatarWrap.appendChild(crownOverlay);
-      }
-
       card.appendChild(rankEl);
-      card.appendChild(crownEl);
       card.appendChild(info);
       card.appendChild(avatarWrap);
       list.appendChild(card);
