@@ -3,17 +3,25 @@
 ═══════════════════════════════════════════════════ */
 
 const socket = io({
-  reconnectionAttempts: 5,
-  reconnectionDelay: 1000,
+  reconnectionAttempts: 8,
+  reconnectionDelay: 1500,
+  reconnectionDelayMax: 5000,
 });
 
 let myPlayerId = null;
 let myRoomCode = null;
 let isDrawer = false;
+let _roomExpired = false;
+let _disconnectTimer = null;
 
 // ─── Connection Lifecycle ─────────────────────────────────────────────────────
 socket.on('connect', () => {
   console.log('[socket] connected:', socket.id);
+
+  // Clear any pending "Connection lost" message
+  if (_disconnectTimer) { clearTimeout(_disconnectTimer); _disconnectTimer = null; }
+
+  if (_roomExpired) return; // room was deleted — don't try to rejoin
 
   // Read room code from URL params first, then sessionStorage as fallback
   const urlParams  = new URLSearchParams(window.location.search);
@@ -22,7 +30,6 @@ socket.on('connect', () => {
 
   if (savedRoom) {
     myRoomCode = savedRoom;
-    // Auto-rejoin: restore identity from sessionStorage
     let identity = {};
     try {
       const raw = sessionStorage.getItem('skribbl_identity');
@@ -41,11 +48,21 @@ socket.on('connect', () => {
 
 socket.on('disconnect', () => {
   console.log('[socket] disconnected');
-  UI.appendSystemMessage('Connection lost. Reconnecting...', '#fc8181');
+  if (_roomExpired) return;
+  // Debounce: only show message if still disconnected after 2 s
+  _disconnectTimer = setTimeout(() => {
+    UI.appendSystemMessage('Connection lost. Reconnecting...', '#fc8181');
+  }, 2000);
 });
 
 socket.on('connect_error', () => {
-  UI.appendSystemMessage('Could not reach server.', '#fc8181');
+  if (!_roomExpired) UI.appendSystemMessage('Could not reach server.', '#fc8181');
+});
+
+socket.on('reconnect_failed', () => {
+  sessionStorage.removeItem('skribbl_room');
+  UI.appendSystemMessage('Could not reconnect. Returning to home...', '#fc8181');
+  setTimeout(() => { window.location.href = '/'; }, 2500);
 });
 
 // ─── Room Bootstrap ───────────────────────────────────────────────────────────
@@ -98,6 +115,14 @@ socket.on('kicked', ({ message }) => {
 
 socket.on('error', ({ message }) => {
   UI.appendSystemMessage('Error: ' + message, '#fc8181');
+  // Room not found on reconnect → stop looping, go home
+  if (message && /room not found/i.test(message)) {
+    _roomExpired = true;
+    socket.disconnect();
+    sessionStorage.removeItem('skribbl_room');
+    UI.appendSystemMessage('Room has expired. Returning to home...', '#fc8181');
+    setTimeout(() => { window.location.href = '/'; }, 2500);
+  }
 });
 
 // ─── Game State Changes ───────────────────────────────────────────────────────
