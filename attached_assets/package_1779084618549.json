@@ -1,0 +1,21 @@
+{
+  "name": "raid-commander-bot",
+  "version": "1.0.0",
+  "description": "Professional Discord Raid Management Bot for clan communities",
+  "main": "src/index.js",
+  "scripts": {
+    "start": "node src/index.js",
+    "dev": "node --watch src/index.js",
+    "deploy": "node src/deploy-commands.js"
+  },
+  "dependencies": {
+    "discord.js": "^14.15.3",
+    "dotenv": "^16.4.5",
+    "uuid": "^10.0.0"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "author": "Raid Commander",
+  "license": "MIT"
+}

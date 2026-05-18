@@ -1455,10 +1455,18 @@ html, body { height: 100%; font-family: var(--font); }
   border: 1px solid #c8c8c8;
 }
 
-/* Left: Players — narrow */
+/* Left: Players — matches skribbl.io 200px */
 .lfs-players {
-  width: 160px;
+  width: 200px;
   flex-shrink: 0;
+}
+#lobby-player-list {
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
 }
 
 /* Center: Settings — fills remaining */

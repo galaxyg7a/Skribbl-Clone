@@ -413,43 +413,92 @@ const UI = (() => {
   function _buildLobbyCards(list, players) {
     list.innerHTML = '';
     const sorted = [...players].sort((a, b) => b.score - a.score);
-    sorted.forEach(p => {
+    const UNIT = 48;
+    sorted.forEach((p, idx) => {
+      const isOdd = idx % 2 !== 0;
+
       const card = document.createElement('div');
       card.id = 'lobby-player-card-' + p.id;
       card.style.cssText = [
-        'display:flex', 'flex-direction:row', 'align-items:center',
-        'gap:7px', 'padding:5px 8px', 'border-bottom:1px solid #eee',
-        'background:#fff', 'cursor:pointer',
+        'position:relative',
+        'width:100%',
+        'height:' + UNIT + 'px',
+        'cursor:pointer',
+        'color:' + (p.isYou ? '#4998ff' : '#000'),
+        'flex-shrink:0',
       ].join(';');
 
-      const avWrap = document.createElement('div');
-      avWrap.style.cssText = 'width:30px;height:30px;border-radius:4px;overflow:hidden;flex-shrink:0;';
-      const c = document.createElement('canvas');
-      c.width = 30; c.height = 30;
-      c.style.cssText = 'width:30px;height:30px;display:block;';
-      avWrap.appendChild(c);
+      const bg = document.createElement('div');
+      bg.style.cssText = [
+        'overflow:hidden',
+        'position:absolute',
+        'width:100%',
+        'height:100%',
+        'background:' + (isOdd ? '#ececec' : '#fff'),
+        'top:0', 'left:0',
+      ].join(';');
+      card.appendChild(bg);
+
+      const rankEl = document.createElement('div');
+      rankEl.style.cssText = 'position:absolute;font-weight:700;font-size:1.1em;top:5px;left:6px;z-index:1;';
+      rankEl.textContent = '#' + (idx + 1);
+      card.appendChild(rankEl);
 
       const info = document.createElement('div');
-      info.style.cssText = 'flex:1;min-width:0;display:flex;flex-direction:column;gap:1px;';
+      info.style.cssText = [
+        'width:100%',
+        'height:100%',
+        'position:relative',
+        'display:flex',
+        'flex-direction:column',
+        'justify-content:center',
+        'text-align:center',
+        'padding-left:28px',
+        'padding-right:' + (UNIT + 4) + 'px',
+        'box-sizing:border-box',
+        'z-index:1',
+      ].join(';');
 
       const nameEl = document.createElement('div');
       nameEl.style.cssText = [
-        'font-size:0.76rem', 'font-weight:800', 'white-space:nowrap',
-        'overflow:hidden', 'text-overflow:ellipsis',
-        'color:' + (p.isYou ? '#3b82f6' : '#222'),
+        'width:100%',
+        'font-size:1em',
+        'line-height:1em',
+        'font-weight:700',
+        'white-space:nowrap',
+        'overflow:hidden',
+        'text-overflow:ellipsis',
       ].join(';');
-      nameEl.textContent = p.username + (p.isYou ? ' (You)' : '') + (p.isHost ? ' 👑' : '');
+      let label = p.username;
+      if (p.isYou)  label += ' (You)';
+      if (p.isHost) label += ' 👑';
+      nameEl.textContent = label;
 
       const scoreEl = document.createElement('div');
-      scoreEl.style.cssText = 'font-size:0.62rem;color:#888;';
-      scoreEl.textContent = p.score + ' points';
+      scoreEl.style.cssText = 'width:100%;font-size:0.9em;line-height:1em;color:inherit;opacity:0.7;';
+      scoreEl.textContent = p.score + ' Points';
 
       info.appendChild(nameEl);
       info.appendChild(scoreEl);
-      card.appendChild(avWrap);
       card.appendChild(info);
-      list.appendChild(card);
 
+      const avContainer = document.createElement('div');
+      avContainer.style.cssText = [
+        'position:absolute',
+        'right:0',
+        'top:-1px',
+        'width:' + UNIT + 'px',
+        'height:' + UNIT + 'px',
+        'overflow:hidden',
+        'z-index:1',
+      ].join(';');
+      const c = document.createElement('canvas');
+      c.width = UNIT; c.height = UNIT;
+      c.style.cssText = 'width:' + UNIT + 'px;height:' + UNIT + 'px;display:block;';
+      avContainer.appendChild(c);
+      card.appendChild(avContainer);
+
+      list.appendChild(card);
       renderSkribblAvatar(c, getAvatarFeatures(p.id, p.avatarColor, p.avatarData));
     });
   }
