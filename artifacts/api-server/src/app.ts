@@ -33,10 +33,6 @@ app.use(express.urlencoded({ extended: true }));
 const publicDir = path.resolve(globalThis.__dirname ?? import.meta.dirname ?? ".", "public");
 app.use(express.static(publicDir));
 
-app.get("/game", (_req, res) => {
-  res.sendFile(path.join(publicDir, "game.html"));
-});
-
 app.use("/api", router);
 
 export default app;
