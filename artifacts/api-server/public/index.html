@@ -109,6 +109,7 @@
   </div>
 
   <script src="/socket.io/socket.io.js"></script>
+  <script src="/js/avatar-atlas.js"></script>
   <script>
   /* ─── Invite Code Detection ───────────────────────────────────── */
   const _urlParams  = new URLSearchParams(window.location.search);
@@ -193,6 +194,7 @@
   }
 
   function renderSkribblAvatar(canvas, features) {
+    if (typeof AvatarAtlas !== 'undefined' && AvatarAtlas.isReady() && AvatarAtlas.render(canvas, features)) return;
     const ctx=canvas.getContext('2d');
     const W=canvas.width,H=canvas.height;
     ctx.clearRect(0,0,W,H);
@@ -219,13 +221,17 @@
     renderSkribblAvatar(c, { bodyIndex, eyeIndex, mouthIndex });
   }
 
-  function cycleEye(dir)   { eyeIndex   = (eyeIndex   + dir + 10) % 10; drawAvatar(); }
-  function cycleMouth(dir) { mouthIndex = (mouthIndex + dir + 10) % 10; drawAvatar(); }
-  function cycleBody(dir)  { bodyIndex  = (bodyIndex  + dir + BODY_COLORS.length) % BODY_COLORS.length; drawAvatar(); }
+  let _eyeTotal   = 57;
+  let _mouthTotal = 51;
+  let _bodyTotal  = 28;
+
+  function cycleEye(dir)   { eyeIndex   = ((eyeIndex   + dir) % _eyeTotal   + _eyeTotal)   % _eyeTotal;   drawAvatar(); }
+  function cycleMouth(dir) { mouthIndex = ((mouthIndex + dir) % _mouthTotal + _mouthTotal) % _mouthTotal; drawAvatar(); }
+  function cycleBody(dir)  { bodyIndex  = ((bodyIndex  + dir) % _bodyTotal  + _bodyTotal)  % _bodyTotal;  drawAvatar(); }
   function randomizeAvatar() {
-    eyeIndex   = Math.floor(Math.random() * 10);
-    mouthIndex = Math.floor(Math.random() * 10);
-    bodyIndex  = Math.floor(Math.random() * BODY_COLORS.length);
+    eyeIndex   = Math.floor(Math.random() * _eyeTotal);
+    mouthIndex = Math.floor(Math.random() * _mouthTotal);
+    bodyIndex  = Math.floor(Math.random() * _bodyTotal);
     drawAvatar();
   }
   function getAvatarColor() { return BODY_COLORS[bodyIndex % BODY_COLORS.length]; }
@@ -236,11 +242,14 @@
     const parade = document.getElementById('avatar-parade');
     if (!parade) return;
     parade.innerHTML = '';
-    for (let bi = 0; bi < Math.min(BODY_COLORS.length, 12); bi++) {
+    const total = Math.min(_bodyTotal, 12);
+    const eyeMax   = _eyeTotal;
+    const mouthMax = _mouthTotal;
+    for (let bi = 0; bi < total; bi++) {
       const c = document.createElement('canvas');
       c.width = 42; c.height = 42;
       c.className = 'parade-avatar';
-      renderSkribblAvatar(c, { bodyIndex: bi, eyeIndex: bi % 10, mouthIndex: (bi * 3) % 10 });
+      renderSkribblAvatar(c, { bodyIndex: bi, eyeIndex: bi % eyeMax, mouthIndex: (bi * 3) % mouthMax });
       parade.appendChild(c);
     }
   }
@@ -321,6 +330,7 @@
   /* ─── Init ────────────────────────────────────────────────────── */
   randomizeAvatar();
   buildParade();
+
 
   if (_isInviteFlow) {
     document.querySelector('.avatar-customizer').style.display = 'none';

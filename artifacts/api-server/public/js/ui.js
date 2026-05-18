@@ -8,11 +8,14 @@ const UI = (() => {
   /* ══════════════════════════════════════════════════════════════════
      ORGANIC SKRIBBL AVATAR ENGINE
   ══════════════════════════════════════════════════════════════════ */
+  /* 28 body colours — matches the real skribbl.io P=28 count */
   const BODY_COLORS = [
     '#E74C3C','#E91E63','#FF9800','#F1C40F','#2ECC71',
     '#1ABC9C','#3498DB','#9B59B6','#FF5722','#00BCD4',
     '#8BC34A','#FF4081','#795548','#607D8B','#FF6B6B',
     '#A855F7','#F97316','#06B6D4','#84CC16','#F43F5E',
+    '#10B981','#6366F1','#EC4899','#F59E0B','#14B8A6',
+    '#8B5CF6','#EF4444','#22D3EE',
   ];
 
   function _wCircle(ctx, cx, cy, r, seed) {
@@ -275,16 +278,28 @@ const UI = (() => {
     _drawMouth(ctx, cx, cy, r, mi, W);
   }
 
+  /* Real skribbl.io variant counts (P=28, Y=57, z=51 from game.js) */
+  const ATLAS_COUNTS = { color: 28, eyes: 57, mouth: 51 };
+
   function getAvatarFeatures(playerIdOrName, avatarColor, avatarData) {
     if (avatarData && avatarData.bodyIndex != null) return avatarData;
-    const colorIdx = BODY_COLORS.findIndex(c => c.toLowerCase() === (avatarColor || '').toLowerCase());
     let hash = 0;
-    for (const c of (playerIdOrName || '')) { hash = ((hash << 5) - hash) + c.charCodeAt(0); hash |= 0; }
+    for (const ch of (playerIdOrName || '')) { hash = ((hash << 5) - hash) + ch.charCodeAt(0); hash |= 0; }
     return {
-      bodyIndex:  colorIdx >= 0 ? colorIdx : Math.abs(hash) % BODY_COLORS.length,
-      eyeIndex:   Math.abs(hash >> 3) % 10,
-      mouthIndex: Math.abs(hash >> 6) % 10,
+      bodyIndex:  Math.abs(hash)       % ATLAS_COUNTS.color,
+      eyeIndex:   Math.abs(hash >> 3)  % ATLAS_COUNTS.eyes,
+      mouthIndex: Math.abs(hash >> 6)  % ATLAS_COUNTS.mouth,
     };
+  }
+
+  function refreshAllAvatars() {
+    document.querySelectorAll('[data-avatar-id]').forEach(canvas => {
+      const id    = canvas.dataset.avatarId;
+      const color = canvas.dataset.avatarColor;
+      let data = null;
+      try { data = JSON.parse(canvas.dataset.avatarData || 'null'); } catch (_) {}
+      renderSkribblAvatar(canvas, getAvatarFeatures(id, color, data));
+    });
   }
 
   /* ══════════════════════════════════════════════════════════════════
@@ -400,6 +415,9 @@ const UI = (() => {
       c.width = 36; c.height = 36;
       c.style.width  = '36px';
       c.style.height = '36px';
+      c.dataset.avatarId    = p.id;
+      c.dataset.avatarColor = p.avatarColor || '';
+      c.dataset.avatarData  = JSON.stringify(p.avatarData || null);
       avatarWrap.appendChild(c);
       renderSkribblAvatar(c, getAvatarFeatures(p.id, p.avatarColor, p.avatarData));
 
@@ -495,6 +513,9 @@ const UI = (() => {
       const c = document.createElement('canvas');
       c.width = UNIT; c.height = UNIT;
       c.style.cssText = 'width:' + UNIT + 'px;height:' + UNIT + 'px;display:block;';
+      c.dataset.avatarId    = p.id;
+      c.dataset.avatarColor = p.avatarColor || '';
+      c.dataset.avatarData  = JSON.stringify(p.avatarData || null);
       avContainer.appendChild(c);
       card.appendChild(avContainer);
 
@@ -839,6 +860,7 @@ const UI = (() => {
     openPlayerModal, closePlayerModal, votekickPlayer, mutePlayer, reportPlayer,
     updateInviteLink,
     updateHostBadge,
+    refreshAllAvatars,
     BODY_COLORS,
     renderSkribblAvatar,
   };
