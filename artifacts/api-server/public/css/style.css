@@ -1,35 +1,35 @@
 /* ═══════════════════════════════════════════════════════════════════
-   INKSHOT / Skribbl Clone — Complete Visual Redesign
-   Matching skribbl.io aesthetic: blue background, pixel avatars,
-   cream player cards, green correct-guess highlights
+   INKSHOT — Draw & Guess Game
+   Dark ink theme: deep navy background, hot-pink + cyan accents
 ═══════════════════════════════════════════════════════════════════ */
 
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
 :root {
-  --blue-bg:      #2962cc;
-  --blue-dark:    #1a3585;
-  --blue-med:     #3674d4;
-  --blue-panel:   #1e3fa0;
-  --blue-header:  #1c2e6e;
+  --blue-bg:      #0f1624;
+  --blue-dark:    #090e18;
+  --blue-med:     #1a2540;
+  --blue-panel:   #161f35;
+  --blue-header:  #0a0f1e;
   --white:        #ffffff;
-  --off-white:    #f5f7ff;
-  --green:        #53cf25;
-  --green-dark:   #3dab18;
-  --green-bg:     rgba(83,207,37,0.15);
-  --btn-blue:     #2979ff;
-  --btn-blue-h:   #1a5cd4;
-  --red:          #e53935;
-  --yellow:       #f5c518;
-  --orange:       #ff9100;
-  --text-dark:    #1a1a2e;
-  --text-med:     #3a3a5a;
+  --off-white:    #f0f4ff;
+  --green:        #00e676;
+  --green-dark:   #00b359;
+  --green-bg:     rgba(0,230,118,0.15);
+  --btn-blue:     #e91e8c;
+  --btn-blue-h:   #c41674;
+  --red:          #ff4757;
+  --yellow:       #ffd32a;
+  --orange:       #ff6b35;
+  --accent:       #00e5ff;
+  --text-dark:    #0a0f1e;
+  --text-med:     #2a304a;
   --text-white:   rgba(255,255,255,0.95);
-  --text-dim-w:   rgba(255,255,255,0.65);
-  --border-dark:  rgba(0,0,0,0.15);
-  --border-blue:  rgba(255,255,255,0.18);
-  --shadow:       0 2px 12px rgba(0,0,0,0.28);
-  --shadow-lg:    0 6px 32px rgba(0,0,0,0.45);
+  --text-dim-w:   rgba(255,255,255,0.55);
+  --border-dark:  rgba(0,0,0,0.25);
+  --border-blue:  rgba(255,255,255,0.12);
+  --shadow:       0 2px 12px rgba(0,0,0,0.5);
+  --shadow-lg:    0 6px 32px rgba(0,0,0,0.7);
   --radius:       10px;
   --radius-sm:    6px;
   --radius-lg:    16px;
@@ -47,21 +47,23 @@ html, body { height: 100%; font-family: var(--font); }
 /* ═══════════════════════════════════════════════════════════════════
    DOODLE BACKGROUND
 ═══════════════════════════════════════════════════════════════════ */
-.skribbl-bg {
+.inkshot-bg {
   background-color: var(--blue-bg);
-  background-image: url("/img/background.png");
-  background-repeat: repeat;
-  background-size: auto;
+  background-image:
+    radial-gradient(ellipse at 15% 25%, rgba(233,30,140,0.08) 0%, transparent 50%),
+    radial-gradient(ellipse at 85% 70%, rgba(0,229,255,0.07) 0%, transparent 50%),
+    radial-gradient(ellipse at 50% 50%, rgba(255,255,255,0.02) 0%, transparent 70%);
 }
 
-/* Real skribbl.io pen GIF next to logo */
-.logo-pen-gif {
+/* Legacy alias kept for any hard-coded references */
+.skribbl-bg { background-color: var(--blue-bg); }
+
+.logo-dot {
   display: inline-block;
-  width: 44px;
-  height: 44px;
+  font-size: 0.75em;
   vertical-align: middle;
   margin-left: 4px;
-  image-rendering: pixelated;
+  filter: drop-shadow(0 0 6px rgba(233,30,140,0.8));
 }
 
 /* Tool icon GIFs in the toolbar */
@@ -98,17 +100,14 @@ html, body { height: 100%; font-family: var(--font); }
   line-height: 1;
   display: block;
 }
-.logo-text .l1 { color: #ff3b3b; }
-.logo-text .l2 { color: #ff7b00; }
-.logo-text .l3 { color: #ff7b00; }
-.logo-text .l4 { color: #ffdb00; }
-.logo-text .l5 { color: #53cf25; }
-.logo-text .l6 { color: #53cf25; }
-.logo-text .l7 { color: #00c8ff; }
-.logo-text .l8 { color: #2979ff; }
-.logo-text .l9 { color: #9b27af; }
-.logo-text .l10 { color: #e91e8c; }
-.logo-text .pencil { color: #ff9100; font-style: normal; }
+/* I N K S H O T — 7 letters */
+.logo-text .l1 { color: #ff4757; text-shadow: 0 0 20px rgba(255,71,87,0.6); }
+.logo-text .l2 { color: #ff7b00; text-shadow: 0 0 20px rgba(255,123,0,0.6); }
+.logo-text .l3 { color: #ffd32a; text-shadow: 0 0 20px rgba(255,211,42,0.6); }
+.logo-text .l4 { color: #00e676; text-shadow: 0 0 20px rgba(0,230,118,0.6); }
+.logo-text .l5 { color: #00e5ff; text-shadow: 0 0 20px rgba(0,229,255,0.6); }
+.logo-text .l6 { color: #9c27b0; text-shadow: 0 0 20px rgba(156,39,176,0.6); }
+.logo-text .l7 { color: #e91e8c; text-shadow: 0 0 20px rgba(233,30,140,0.6); }
 
 .avatar-parade {
   display: flex;
@@ -585,7 +584,7 @@ html, body { height: 100%; font-family: var(--font); }
 .game-center {
   display: flex;
   flex-direction: column;
-  background: #ccd8f0;
+  background: #1a2035;
   align-items: center;
   justify-content: flex-start;
   overflow: hidden;
@@ -790,7 +789,7 @@ html, body { height: 100%; font-family: var(--font); }
 
 /* ── WORD SELECTION OVERLAY ── */
 .word-selection-overlay {
-  background: rgba(20,30,100,0.95);
+  background: rgba(5,8,20,0.96);
   align-items: center;
   justify-content: center;
 }
@@ -850,7 +849,7 @@ html, body { height: 100%; font-family: var(--font); }
 
 /* ── TURN / ROUND / GAME OVER OVERLAYS ── */
 .result-overlay {
-  background: rgba(20,30,100,0.95);
+  background: rgba(5,8,20,0.96);
   align-items: center;
   justify-content: center;
 }
@@ -1207,9 +1206,9 @@ html, body { height: 100%; font-family: var(--font); }
 .modal-action-btn:active { transform: translateY(0); }
 
 /* ═══════════════════════════════════════════════════════════════════
-   SKRIBBL LOBBY (2025 dark-panel design)
+   INKSHOT LOBBY
 ═══════════════════════════════════════════════════════════════════ */
-.skribbl-lobby {
+.inkshot-lobby, .skribbl-lobby {
   width: 100%;
   height: 100%;
   display: flex;
@@ -1224,7 +1223,7 @@ html, body { height: 100%; font-family: var(--font); }
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background: #3d4059;
+  background: #1e1630;
   color: #fff;
   padding: 6px 12px;
   font-size: 0.8rem;
@@ -1351,25 +1350,25 @@ html, body { height: 100%; font-family: var(--font); }
   flex-shrink: 0;
   border-top: 1px solid #d4d4d4;
 }
-.skribbl-green-start-btn {
+.inkshot-start-btn {
   flex: 1;
-  background: #53cf25;
+  background: #00e676;
   border: none;
-  color: #fff;
+  color: #0a0f1e;
   font-family: var(--font);
   font-size: 0.9rem;
   font-weight: 900;
   padding: 8px 10px;
   cursor: pointer;
-  box-shadow: inset 0 -3px 0 rgba(0,0,0,0.18);
+  box-shadow: inset 0 -3px 0 rgba(0,0,0,0.25);
   transition: background 0.12s;
 }
-.skribbl-green-start-btn:hover   { background: #46b81e; }
-.skribbl-green-start-btn:active  { box-shadow: none; }
-.skribbl-blue-owner-badge {
+.inkshot-start-btn:hover   { background: #00c853; }
+.inkshot-start-btn:active  { box-shadow: none; }
+.inkshot-owner-badge {
   flex: 1;
-  background: #d0eeff;
-  color: #0a5980;
+  background: #1e1630;
+  color: #00e5ff;
   font-size: 0.82rem;
   font-weight: 700;
   padding: 10px 14px;
@@ -1378,8 +1377,11 @@ html, body { height: 100%; font-family: var(--font); }
   justify-content: center;
   text-align: center;
   line-height: 1.3;
-  border-left: 2px solid #b0d8f0;
+  border-left: 2px solid rgba(0,229,255,0.3);
 }
+/* Legacy aliases */
+.skribbl-green-start-btn { flex: 1; background: #00e676; border: none; color: #0a0f1e; font-family: var(--font); font-size: 0.9rem; font-weight: 900; padding: 8px 10px; cursor: pointer; }
+.skribbl-blue-owner-badge { display: none !important; }
 
 /* Avatar wrap — position for crown */
 .player-card-avatar { position: relative; flex-shrink: 0; }
@@ -1397,10 +1399,8 @@ html, body { height: 100%; font-family: var(--font); }
 }
 
 /* ═══════════════════════════════════════════════════════════════════
-   LOBBY FULL-SCREEN — skribbl-style layout
+   LOBBY FULL-SCREEN — INKSHOT layout
 ═══════════════════════════════════════════════════════════════════ */
-
-.skribbl-blue-owner-badge { display: none !important; }
 
 /* Outer shell: column flex — top-row fills space, bottom-bar is fixed */
 /* Grid: top row fills space, bottom bar always visible at bottom */
@@ -1410,7 +1410,7 @@ html, body { height: 100%; font-family: var(--font); }
   grid-template-rows: 1fr auto;
   min-height: 0;
   overflow: hidden;
-  background: #d0d0d0;
+  background: #0d1120;
 }
 
 /* Top row: the three columns side-by-side */
@@ -1433,8 +1433,8 @@ html, body { height: 100%; font-family: var(--font); }
   border-radius: 4px;
   overflow: hidden;
   background: #fff;
-  border: 1px solid #c8c8c8;
-  box-shadow: 0 1px 4px rgba(0,0,0,0.10);
+  border: 1px solid #2a3050;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.35);
 }
 #lobby-chat-input {
   flex: 1;
@@ -1449,7 +1449,7 @@ html, body { height: 100%; font-family: var(--font); }
 }
 #lobby-chat-input::placeholder { color: #aaa; }
 .lfs-bottom-send {
-  background: #2196f3;
+  background: #e91e8c;
   border: none;
   color: #fff;
   width: 44px;
@@ -1462,7 +1462,7 @@ html, body { height: 100%; font-family: var(--font); }
   justify-content: center;
   transition: background 0.15s;
 }
-.lfs-bottom-send:hover { background: #1976d2; }
+.lfs-bottom-send:hover { background: #c41674; }
 
 /* Column base */
 .lfs-col {
@@ -1472,7 +1472,7 @@ html, body { height: 100%; font-family: var(--font); }
   overflow: hidden;
   min-height: 0;
   background: #ffffff;
-  border: 1px solid #c8c8c8;
+  border: 1px solid #2a3050;
 }
 
 /* Left: Players — matches skribbl.io 200px */
@@ -1505,7 +1505,7 @@ html, body { height: 100%; font-family: var(--font); }
   overflow-y: auto;
   padding: 5px 8px;
   min-height: 0;
-  background: #fafafa;
+  background: #f8f9ff;
   font-size: 0.72rem;
 }
 .lfs-chat .chat-message { margin-bottom: 3px; }
@@ -1518,9 +1518,9 @@ html, body { height: 100%; font-family: var(--font); }
   padding: 5px 10px;
   font-size: 0.65rem;
   font-weight: 900;
-  color: #555;
-  background: #f0f0f0;
-  border-bottom: 1px solid #d0d0d0;
+  color: rgba(255,255,255,0.6);
+  background: #131a2e;
+  border-bottom: 1px solid #2a3050;
   flex-shrink: 0;
   text-transform: uppercase;
   letter-spacing: 0.07em;

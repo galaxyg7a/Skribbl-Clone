@@ -26,13 +26,13 @@ socket.on('connect', () => {
   // Read room code from URL params first, then sessionStorage as fallback
   const urlParams  = new URLSearchParams(window.location.search);
   const urlRoom    = (urlParams.get('room') || '').toUpperCase().trim();
-  const savedRoom  = urlRoom || (sessionStorage.getItem('skribbl_room') || '');
+  const savedRoom  = urlRoom || (sessionStorage.getItem('inkshot_room') || '');
 
   if (savedRoom) {
     myRoomCode = savedRoom;
     let identity = {};
     try {
-      const raw = sessionStorage.getItem('skribbl_identity');
+      const raw = sessionStorage.getItem('inkshot_identity');
       if (raw) identity = JSON.parse(raw);
     } catch (_) {}
     if (identity.username) {
@@ -60,7 +60,7 @@ socket.on('connect_error', () => {
 });
 
 socket.on('reconnect_failed', () => {
-  sessionStorage.removeItem('skribbl_room');
+  sessionStorage.removeItem('inkshot_room');
   UI.appendSystemMessage('Could not reconnect. Returning to home...', '#fc8181');
   setTimeout(() => { window.location.href = '/'; }, 2500);
 });
@@ -69,7 +69,7 @@ socket.on('reconnect_failed', () => {
 socket.on('joined_room', (data) => {
   myPlayerId = data.playerId;
   myRoomCode = data.roomCode;
-  sessionStorage.setItem('skribbl_room', data.roomCode);
+  sessionStorage.setItem('inkshot_room', data.roomCode);
 
   document.getElementById('room-code-badge').textContent = 'ROOM: ' + data.roomCode;
   document.getElementById('round-total').textContent = data.settings.totalRounds;
@@ -108,7 +108,7 @@ socket.on('became_host', () => {
 });
 
 socket.on('kicked', ({ message }) => {
-  sessionStorage.removeItem('skribbl_room');
+  sessionStorage.removeItem('inkshot_room');
   alert(message);
   window.location.href = '/';
 });
@@ -119,7 +119,7 @@ socket.on('error', ({ message }) => {
   if (message && /room not found/i.test(message)) {
     _roomExpired = true;
     socket.disconnect();
-    sessionStorage.removeItem('skribbl_room');
+    sessionStorage.removeItem('inkshot_room');
     UI.appendSystemMessage('Room has expired. Returning to home...', '#fc8181');
     setTimeout(() => { window.location.href = '/'; }, 2500);
   }
@@ -300,7 +300,7 @@ function sendChat() {
 }
 
 function leaveGame() {
-  sessionStorage.removeItem('skribbl_room');
+  sessionStorage.removeItem('inkshot_room');
   window.location.href = '/';
 }
 

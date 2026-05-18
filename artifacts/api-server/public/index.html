@@ -8,7 +8,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet" />
 </head>
-<body class="landing-body skribbl-bg">
+<body class="landing-body inkshot-bg">
 
   <div id="error-banner" class="error-banner hidden">
     <span id="error-text"></span>
@@ -18,7 +18,7 @@
   <!-- LOGO -->
   <div class="logo-area">
     <span class="logo-text">
-      <span class="l1">s</span><span class="l2">k</span><span class="l3">r</span><span class="l4">i</span><span class="l5">b</span><span class="l6">b</span><span class="l7">l</span><span class="l8">.</span><span class="l9">i</span><span class="l10">o</span><img src="/img/pen.gif" class="logo-pen-gif" alt="" />
+      <span class="l1">I</span><span class="l2">N</span><span class="l3">K</span><span class="l4">S</span><span class="l5">H</span><span class="l6">O</span><span class="l7">T</span><span class="logo-dot">✏️</span>
     </span>
     <!-- Avatar parade (decorative) -->
     <div class="avatar-parade" id="avatar-parade"></div>
@@ -276,10 +276,10 @@
   const socket = io();
 
   socket.on('joined_room', ({ roomCode, playerId }) => {
-    sessionStorage.setItem('skribbl_room', roomCode);
-    sessionStorage.setItem('skribbl_player_id', playerId);
+    sessionStorage.setItem('inkshot_room', roomCode);
+    sessionStorage.setItem('inkshot_player_id', playerId);
     const identity = pendingIdentity || {};
-    sessionStorage.setItem('skribbl_identity', JSON.stringify(identity));
+    sessionStorage.setItem('inkshot_identity', JSON.stringify(identity));
     window.location.href = '/game?room=' + roomCode;
   });
   socket.on('error', ({ message }) => showError(message));

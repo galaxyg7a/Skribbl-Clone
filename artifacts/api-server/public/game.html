@@ -8,7 +8,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet" />
 </head>
-<body class="game-body skribbl-bg">
+<body class="game-body inkshot-bg">
 
   <!-- ══════════════════════════════════════════
        HEADER
@@ -149,9 +149,9 @@
 
       <!-- Start / Invite / Owner badge bar -->
       <div class="lobby-action-control-footer">
-        <button id="start-btn" class="skribbl-green-start-btn hidden" onclick="startGame()">Start!</button>
+        <button id="start-btn" class="inkshot-start-btn hidden" onclick="startGame()">Start!</button>
         <button type="button" id="invite-copy-btn" class="lobby-invite-btn" onclick="copyInviteLink()"><img src="/img/link.svg" style="width:14px;height:14px;vertical-align:middle;margin-right:4px;" alt=""/>Invite</button>
-        <span id="lobby-host-badge" class="skribbl-blue-owner-badge hidden"></span>
+        <span id="lobby-host-badge" class="inkshot-owner-badge hidden"></span>
       </div>
       <input type="text" id="invite-link-input" style="display:none" readonly value="" />
 
@@ -192,7 +192,7 @@
   <div class="game-layout">
 
     <!-- ── LEFT: SCOREBOARD ── -->
-    <aside class="scoreboard skribbl-bg">
+    <aside class="scoreboard inkshot-bg">
       <div id="player-list" class="player-list"></div>
     </aside>
 
