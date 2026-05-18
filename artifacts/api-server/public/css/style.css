@@ -49,8 +49,28 @@ html, body { height: 100%; font-family: var(--font); }
 ═══════════════════════════════════════════════════════════════════ */
 .skribbl-bg {
   background-color: var(--blue-bg);
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='400'%3E%3Cg fill='none' stroke='%23ffffff' stroke-width='1.5' opacity='0.1' stroke-linecap='round'%3E%3Ccircle cx='30' cy='30' r='10'/%3E%3Cpath d='M20 30 q5-10 10 0 q5 10 10 0'/%3E%3Cpath d='M60 80 L70 60 L80 80 Z'/%3E%3Ccircle cx='150' cy='40' r='14'/%3E%3Cpath d='M144 36 q6-8 12 0'/%3E%3Cpath d='M200 20 L210 40 L220 20'/%3E%3Crect x='270' y='20' width='20' height='25' rx='3'/%3E%3Ccircle cx='360' cy='50' r='8'/%3E%3Cpath d='M350 50 q10-15 20 0'/%3E%3Cpath d='M30 120 q15-20 30 0 q15 20 30 0'/%3E%3Ccircle cx='130' cy='130' r='18'/%3E%3Cpath d='M120 126 q10-8 20 0' stroke-width='2'/%3E%3Cpath d='M122 138 q8 6 16 0'/%3E%3Crect x='200' y='110' width='30' height='35' rx='5'/%3E%3Ccircle cx='330' cy='140' r='12'/%3E%3Cpath d='M380 100 L395 130 L365 130 Z'/%3E%3Cpath d='M20 230 q20-30 40 0'/%3E%3Ccircle cx='110' cy='240' r='15'/%3E%3Cpath d='M100 238 q10-8 20 0' stroke-width='2'/%3E%3Cpath d='M102 248 q8 6 16 0'/%3E%3Crect x='175' y='220' width='25' height='30' rx='4'/%3E%3Cpath d='M260 210 L280 250 L240 250 Z'/%3E%3Ccircle cx='360' cy='240' r='20'/%3E%3Cpath d='M20 330 L40 360 L60 330'/%3E%3Ccircle cx='130' cy='350' r='12'/%3E%3Crect x='200' y='320' width='35' height='40' rx='5'/%3E%3Cpath d='M290 310 q25-25 50 0 q25 25 0 40 q-25 15-50 0 Z'/%3E%3Ccircle cx='390' cy='370' r='10'/%3E%3Cpath d='M380 368 q10-8 20 0' stroke-width='2'/%3E%3Cpath d='M382 375 q8 5 16 0'/%3E%3C/g%3E%3C/svg%3E");
-  background-size: 400px 400px;
+  background-image: url("/img/background.png");
+  background-repeat: repeat;
+  background-size: auto;
+}
+
+/* Real skribbl.io pen GIF next to logo */
+.logo-pen-gif {
+  display: inline-block;
+  width: 44px;
+  height: 44px;
+  vertical-align: middle;
+  margin-left: 4px;
+  image-rendering: pixelated;
+}
+
+/* Tool icon GIFs in the toolbar */
+.tool-icon {
+  width: 22px;
+  height: 22px;
+  display: block;
+  image-rendering: pixelated;
+  pointer-events: none;
 }
 
 /* ═══════════════════════════════════════════════════════════════════

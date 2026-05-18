@@ -42,7 +42,7 @@
     <!-- Right: Room code + Gear -->
     <div class="header-right">
       <span id="room-code-badge">ROOM: ——</span>
-      <button class="gear-btn" onclick="UI.openSettingsModal()" title="Settings">⚙</button>
+      <button class="gear-btn" onclick="UI.openSettingsModal()" title="Settings"><img src="/img/settings.gif" alt="Settings" style="width:22px;height:22px;display:block;filter:brightness(0) invert(1);" /></button>
     </div>
   </header>
 
@@ -150,7 +150,7 @@
       <!-- Start / Invite / Owner badge bar -->
       <div class="lobby-action-control-footer">
         <button id="start-btn" class="skribbl-green-start-btn hidden" onclick="startGame()">Start!</button>
-        <button type="button" id="invite-copy-btn" class="lobby-invite-btn" onclick="copyInviteLink()">🔗 Invite</button>
+        <button type="button" id="invite-copy-btn" class="lobby-invite-btn" onclick="copyInviteLink()"><img src="/img/link.svg" style="width:14px;height:14px;vertical-align:middle;margin-right:4px;" alt=""/>Invite</button>
         <span id="lobby-host-badge" class="skribbl-blue-owner-badge hidden"></span>
       </div>
       <input type="text" id="invite-link-input" style="display:none" readonly value="" />
@@ -250,11 +250,11 @@
       <!-- TOOL BELT -->
       <div id="tool-belt" class="tool-belt hidden">
         <div class="tool-section">
-          <button id="tool-pencil" class="tool-btn active" title="Pencil (B)"   onclick="setTool('pencil')">✏️</button>
-          <button id="tool-eraser" class="tool-btn"        title="Eraser"        onclick="setTool('eraser')">🧹</button>
-          <button id="tool-fill"   class="tool-btn"        title="Fill (F)"      onclick="setTool('fill')">🪣</button>
-          <button class="tool-btn"                          title="Undo (U)"      onclick="doUndo()">↩️</button>
-          <button class="tool-btn"                          title="Clear (C)"     onclick="doClear()">🗑️</button>
+          <button id="tool-pencil" class="tool-btn active" title="Pencil (B)"   onclick="setTool('pencil')"><img src="/img/pen.gif"          class="tool-icon" alt="Pencil"/></button>
+          <button id="tool-eraser" class="tool-btn"        title="Eraser"        onclick="setTool('eraser')"><img src="/img/size.gif"         class="tool-icon" alt="Eraser"/></button>
+          <button id="tool-fill"   class="tool-btn"        title="Fill (F)"      onclick="setTool('fill')">  <img src="/img/bulb.gif"         class="tool-icon" alt="Fill"/></button>
+          <button class="tool-btn"                          title="Undo (U)"      onclick="doUndo()">         <img src="/img/arrow.gif"        class="tool-icon" alt="Undo"/></button>
+          <button class="tool-btn"                          title="Clear (C)"     onclick="doClear()">        <img src="/img/randomize.gif"    class="tool-icon" alt="Clear"/></button>
         </div>
         <div class="tool-section palette-section">
           <div id="color-palette" class="color-palette"></div>
