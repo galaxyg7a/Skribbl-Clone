@@ -59,6 +59,8 @@ A real-time multiplayer draw-and-guess game, faithfully recreating Skribbl.io wi
 - **Avatar atlas** — Replaced zipA's opaque-black-background 509×509 atlases with zip2's transparent 480×480 atlases (color_atlas, eyes_atlas, mouth_atlas). The special_atlas was unchanged.
 - **Avatar background-position** — `game.js`'s `ue()` function uses `background-position: -c*100%` which the CSS spec formula places outside the viewport for non-zero sprite indices. Fixed via `public/js/avatarfix.js` (MutationObserver that converts percentages to pixel offsets on all `.avatar` children).
 - **Nunito OTS errors** — `fonts.css` now loads Nunito from Google Fonts CDN WOFF2 instead of broken local `.ttf` files.
+- **Corrupted image assets** — Replaced all broken/corrupted GIF files (arrow.gif had an impossible 64845×64814 frame; logo, tutorial steps, settings icons, atlases also wrong) with correct versions from user-provided zip. Both `public/img/` and `dist/public/img/` must be updated when replacing images.
+- **Invite link hardcoded to skribbl.io** — `game.js` built the invite URL as `"https://skribbl.io/?"+roomId`. Changed to `window.location.origin+"/?"+roomId` so it always points to the current host. Fix applied to both `public/js/game.js` and `dist/public/js/game.js`.
 
 ## Gotchas
 
