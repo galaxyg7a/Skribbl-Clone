@@ -1,6 +1,6 @@
-# Skribbl Clone
+# eon-skribbl
 
-A real-time multiplayer draw-and-guess game, faithfully recreating Skribbl.io with a full game state machine, Socket.io sync, flood-fill canvas, scoring, and word hints.
+A real-time multiplayer draw-and-guess game, clone of skribbl.io with a full game state machine, Socket.io sync, flood-fill canvas, scoring, and word hints. Deployed at https://eon-skribbl.up.railway.app/
 
 ## Run & Operate
 
