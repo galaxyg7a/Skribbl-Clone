@@ -188,7 +188,8 @@ function wordDisplay(room: Room, forPlayer: string): number[] | null {
 function buildScoresFlat(room: Room): unknown[] {
   const sorted = [...room.players].sort((a, b) => b.score - a.score);
   const flat: unknown[] = [];
-  sorted.forEach((p, rank) => flat.push(p.id, p.earnedThisTurn, rank));
+  // Client reads: scores[i+1] → updates sidebar total, scores[i+2] (via comma expr) → earned overlay
+  sorted.forEach((p) => flat.push(p.id, p.score, p.earnedThisTurn));
   return flat;
 }
 
@@ -204,7 +205,7 @@ function buildState(room: Room, forPlayer?: string): unknown {
     case ST.LOBBY:       return { ...base, data: { id: room.ownerId } };
     case ST.WAITING:
     case ST.STARTING:    return { ...base, data: 0 };
-    case ST.ROUND_START: return { ...base, data: room.currentRound };
+    case ST.ROUND_START: return { ...base, data: room.currentRound - 1 }; // client does data+1 to display
     case ST.WORD_SELECT:
       if (forPlayer === room.drawerId)
         return { ...base, data: { id: room.drawerId, words: room.wordOptions } };
@@ -601,7 +602,9 @@ export function setupSocketIO(server: HttpServer) {
             if (room.state !== ST.WORD_SELECT) return;
             if (socket.id !== room.drawerId)   return;
             const word = typeof data === 'string' ? data
-              : (Array.isArray(data) ? room.wordOptions[Number((data as number[])[0])] ?? '' : '');
+              : (Array.isArray(data) ? room.wordOptions[Number((data as number[])[0])] ?? ''
+              : typeof data === 'number' ? room.wordOptions[data as number] ?? ''
+              : '');
             if (!word || !room.wordOptions.includes(word)) return;
             startDrawing(io, room, word);
             break;
