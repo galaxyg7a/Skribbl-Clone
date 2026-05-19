@@ -51,7 +51,14 @@ A real-time multiplayer draw-and-guess game, faithfully recreating Skribbl.io wi
 
 ## User preferences
 
-_Populate as you build — explicit user instructions worth remembering across sessions._
+- The user provided zip archives of original skribbl.io assets (zip2/zip3 contain the correct 480×480 avatar atlases with transparent backgrounds).
+- Audio .ogg files (roundStart, roundEndSuccess, roundEndFailure, join, leave, playerGuessed, tick) are simply missing from all provided archives — the game is functional without them.
+
+## Bug fixes applied
+
+- **Avatar atlas** — Replaced zipA's opaque-black-background 509×509 atlases with zip2's transparent 480×480 atlases (color_atlas, eyes_atlas, mouth_atlas). The special_atlas was unchanged.
+- **Avatar background-position** — `game.js`'s `ue()` function uses `background-position: -c*100%` which the CSS spec formula places outside the viewport for non-zero sprite indices. Fixed via `public/js/avatarfix.js` (MutationObserver that converts percentages to pixel offsets on all `.avatar` children).
+- **Nunito OTS errors** — `fonts.css` now loads Nunito from Google Fonts CDN WOFF2 instead of broken local `.ttf` files.
 
 ## Gotchas
 

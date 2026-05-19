@@ -19,45 +19,8 @@
   direction: ltr;
 }
 
-@font-face {
-  font-family: 'Nunito';
-  font-style: normal;
-  font-weight: 400;
-  font-display: swap;
-  src: url(Nunito-Regular.ttf) format('truetype');
-}
-
-@font-face {
-  font-family: 'Nunito';
-  font-style: italic;
-  font-weight: 400;
-  font-display: swap;
-  src: url(Nunito-Italic.ttf) format('truetype');
-}
-
-@font-face {
-  font-family: 'Nunito';
-  font-style: normal;
-  font-weight: 600;
-  font-display: swap;
-  src: url(Nunito-SemiBold.ttf) format('truetype');
-}
-
-@font-face {
-  font-family: 'Nunito';
-  font-style: normal;
-  font-weight: 700;
-  font-display: swap;
-  src: url(Nunito-Bold.ttf) format('truetype');
-}
-
-@font-face {
-  font-family: 'Nunito';
-  font-style: normal;
-  font-weight: 800;
-  font-display: swap;
-  src: url(Nunito-ExtraBold.ttf) format('truetype');
-}
+/* Nunito — loaded from Google Fonts CDN (WOFF2) to avoid OTS parsing errors */
+@import url('https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,400;0,600;0,700;0,800;1,400&display=swap');
 
 @font-face {
   font-family: 'Inconsolata';
