@@ -586,7 +586,6 @@ export function setupSocketIO(server: HttpServer) {
           // ── Start game (id=22) ─────────────────────────────────────────────
           case 22: {
             if (!player.isOwner)           { sendTo(socket, EV.WARNING, { id: 0 }); return; }
-            if (room.players.length < 2)   { sendTo(socket, EV.WARNING, { id: 0 }); return; }
             if (room.state !== ST.LOBBY)   return;
             if (typeof data === 'string' && data.trim()) {
               room.customWords = data.split(',')

@@ -61,6 +61,7 @@ A real-time multiplayer draw-and-guess game, clone of skribbl.io with a full gam
 - **Nunito OTS errors** — `fonts.css` now loads Nunito from Google Fonts CDN WOFF2 instead of broken local `.ttf` files.
 - **Corrupted image assets** — Replaced all broken/corrupted GIF files (arrow.gif had an impossible 64845×64814 frame; logo, tutorial steps, settings icons, atlases also wrong) with correct versions from user-provided zip. Both `public/img/` and `dist/public/img/` must be updated when replacing images.
 - **Invite link hardcoded to skribbl.io** — `game.js` built the invite URL as `"https://skribbl.io/?"+roomId`. Changed to `window.location.origin+"/?"+roomId` so it always points to the current host. Fix applied to both `public/js/game.js` and `dist/public/js/game.js`.
+- **Start game blocked with < 2 players** — `engine.ts` refused to start unless 2+ players were present, sending a WARNING that the client displayed only briefly. Removed the minimum player check so the host can start a private room solo (useful for testing). After any change to `engine.ts`, run `pnpm --filter @workspace/api-server run build` to recompile, then restart the workflow.
 
 ## Gotchas
 
