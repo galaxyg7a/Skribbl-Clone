@@ -2,6 +2,13 @@ import { Server as HttpServer } from 'http';
 import { Server as SocketServer, Socket } from 'socket.io';
 import { getRandomWords, generateRoomCode } from './words';
 import { logger } from '../lib/logger';
+import { logActivity } from '../lib/activityLog';
+
+function socketIp(socket: Socket): string {
+  const fwd = socket.handshake.headers['x-forwarded-for'];
+  if (fwd) return String(fwd).split(',')[0].trim();
+  return socket.handshake.address ?? 'unknown';
+}
 
 // ─── Protocol event IDs (match real skribbl.io wire protocol) ─────────────────
 const EV = {
@@ -562,6 +569,7 @@ export function setupSocketIO(server: HttpServer) {
           sendTo(socket, EV.DRAW_BATCH, room.drawCmds);
         }
 
+        logActivity(socketIp(socket), playerName, 'joined', `room ${room.id}`);
         logger.info({ roomCode: room.id, name: playerName }, 'Player joined');
       } catch (e) {
         logger.error(e, 'Error in login handler');
@@ -661,6 +669,8 @@ export function setupSocketIO(server: HttpServer) {
                 return;
               }
             }
+
+            logActivity(socketIp(socket), player.name, 'chat', msg);
 
             // Regular chat: during drawing, guessed players only talk to each other
             if (player.guessed && room.state === ST.DRAWING) {
@@ -880,6 +890,7 @@ export function setupSocketIO(server: HttpServer) {
         return;
       }
 
+      logActivity(socketIp(socket), leavingPlayer.name, 'left', `room ${roomCode}`);
       logger.info({ socketId: socket.id, roomCode }, 'Player left');
     });
   });

@@ -1,11 +1,25 @@
-import express, { type Express } from "express";
+import express, { type Express, type Request, type Response, type NextFunction } from "express";
 import cors from "cors";
 import pinoHttp from "pino-http";
 import path from "path";
 import router from "./routes";
 import { logger } from "./lib/logger";
+import { logActivity } from "./lib/activityLog";
+
+function getClientIp(req: Request): string {
+  const fwd = req.headers["x-forwarded-for"];
+  if (fwd) return String(fwd).split(",")[0].trim();
+  return req.socket?.remoteAddress ?? "unknown";
+}
 
 const app: Express = express();
+
+app.use((req: Request, _res: Response, next: NextFunction) => {
+  if (req.method === "GET" && (req.path === "/" || req.path === "/index.html")) {
+    logActivity(getClientIp(req), "visitor", "page_visit", req.headers["user-agent"] ?? "");
+  }
+  next();
+});
 
 app.use(
   pinoHttp({

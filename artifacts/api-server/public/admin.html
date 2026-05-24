@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Panel — eon-skribbl</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Segoe UI', system-ui, sans-serif;
+      background: #0f1117;
+      color: #e0e0e0;
+      min-height: 100vh;
+    }
+
+    header {
+      background: #1a1d27;
+      border-bottom: 2px solid #2a2d3e;
+      padding: 16px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+
+    header h1 {
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: #fff;
+      letter-spacing: 0.5px;
+    }
+
+    header h1 span { color: #6c8ef5; }
+
+    #status-bar {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 0.8rem;
+      color: #888;
+    }
+
+    #refresh-btn {
+      background: #6c8ef5;
+      color: #fff;
+      border: none;
+      padding: 6px 14px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 0.8rem;
+      font-weight: 600;
+      transition: background 0.15s;
+    }
+    #refresh-btn:hover { background: #5a7de3; }
+    #refresh-btn:disabled { background: #3a3d52; color: #666; cursor: default; }
+
+    main { padding: 24px; max-width: 1400px; margin: 0 auto; }
+
+    .stats-row {
+      display: flex;
+      gap: 16px;
+      margin-bottom: 24px;
+      flex-wrap: wrap;
+    }
+
+    .stat-card {
+      background: #1a1d27;
+      border: 1px solid #2a2d3e;
+      border-radius: 10px;
+      padding: 16px 22px;
+      min-width: 140px;
+      flex: 1;
+    }
+
+    .stat-card .label {
+      font-size: 0.72rem;
+      color: #888;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      margin-bottom: 6px;
+    }
+
+    .stat-card .value {
+      font-size: 1.8rem;
+      font-weight: 700;
+      color: #fff;
+    }
+
+    .stat-card.blue .value  { color: #6c8ef5; }
+    .stat-card.green .value { color: #4caf87; }
+    .stat-card.amber .value { color: #f0a732; }
+    .stat-card.red .value   { color: #e05c5c; }
+
+    .section-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 12px;
+    }
+
+    .section-header h2 {
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: #ccc;
+      text-transform: uppercase;
+      letter-spacing: 0.6px;
+    }
+
+    .filter-row {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 16px;
+      flex-wrap: wrap;
+    }
+
+    .filter-row input, .filter-row select {
+      background: #1a1d27;
+      border: 1px solid #2a2d3e;
+      color: #e0e0e0;
+      padding: 7px 12px;
+      border-radius: 7px;
+      font-size: 0.82rem;
+      outline: none;
+      transition: border-color 0.15s;
+    }
+
+    .filter-row input:focus, .filter-row select:focus { border-color: #6c8ef5; }
+    .filter-row input { flex: 1; min-width: 180px; }
+
+    #log-table-wrap {
+      background: #1a1d27;
+      border: 1px solid #2a2d3e;
+      border-radius: 10px;
+      overflow: hidden;
+      overflow-x: auto;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.83rem;
+    }
+
+    thead th {
+      background: #20243a;
+      color: #aaa;
+      font-weight: 600;
+      text-align: left;
+      padding: 11px 14px;
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      white-space: nowrap;
+      border-bottom: 1px solid #2a2d3e;
+    }
+
+    tbody tr {
+      border-bottom: 1px solid #1e2130;
+      transition: background 0.1s;
+    }
+
+    tbody tr:last-child { border-bottom: none; }
+    tbody tr:hover { background: #1e2231; }
+
+    td {
+      padding: 9px 14px;
+      vertical-align: middle;
+      white-space: nowrap;
+    }
+
+    td.detail {
+      white-space: normal;
+      word-break: break-word;
+      max-width: 320px;
+      color: #aaa;
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 20px;
+      font-size: 0.72rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.4px;
+    }
+
+    .badge-page_visit { background: #2a3a5c; color: #6c8ef5; }
+    .badge-joined     { background: #1e3a2a; color: #4caf87; }
+    .badge-left       { background: #3a2828; color: #e05c5c; }
+    .badge-chat       { background: #3a3010; color: #f0a732; }
+    .badge-drew       { background: #2e2840; color: #b07ef5; }
+    .badge-guessed    { background: #1a3828; color: #5cd6a0; }
+
+    .ip-cell {
+      font-family: 'Courier New', monospace;
+      font-size: 0.8rem;
+      color: #c5a0ff;
+    }
+
+    .time-cell {
+      color: #666;
+      font-size: 0.78rem;
+      font-family: 'Courier New', monospace;
+    }
+
+    #empty-state {
+      text-align: center;
+      padding: 60px 20px;
+      color: #555;
+      font-size: 0.95rem;
+      display: none;
+    }
+
+    #error-msg {
+      background: #3a1e1e;
+      border: 1px solid #6b2e2e;
+      color: #f47;
+      padding: 12px 18px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+      font-size: 0.85rem;
+      display: none;
+    }
+
+    #last-updated {
+      font-size: 0.75rem;
+      color: #555;
+    }
+
+    @media (max-width: 640px) {
+      main { padding: 16px; }
+      .stat-card .value { font-size: 1.4rem; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>eon-skribbl <span>Admin</span></h1>
+    <div id="status-bar">
+      <span id="last-updated"></span>
+      <button id="refresh-btn" onclick="load()">Refresh</button>
+    </div>
+  </header>
+
+  <main>
+    <div id="error-msg"></div>
+
+    <div class="stats-row">
+      <div class="stat-card blue">
+        <div class="label">Total Events</div>
+        <div class="value" id="stat-total">—</div>
+      </div>
+      <div class="stat-card green">
+        <div class="label">Page Visits</div>
+        <div class="value" id="stat-visits">—</div>
+      </div>
+      <div class="stat-card amber">
+        <div class="label">Unique IPs</div>
+        <div class="value" id="stat-ips">—</div>
+      </div>
+      <div class="stat-card red">
+        <div class="label">Chat Messages</div>
+        <div class="value" id="stat-chats">—</div>
+      </div>
+    </div>
+
+    <div class="section-header">
+      <h2>Activity Log</h2>
+    </div>
+
+    <div class="filter-row">
+      <input id="filter-text" type="text" placeholder="Filter by IP, username, or detail…" oninput="renderTable()">
+      <select id="filter-action" onchange="renderTable()">
+        <option value="">All actions</option>
+        <option value="page_visit">Page Visits</option>
+        <option value="joined">Joined</option>
+        <option value="left">Left</option>
+        <option value="chat">Chat</option>
+        <option value="drew">Drew</option>
+        <option value="guessed">Guessed</option>
+      </select>
+    </div>
+
+    <div id="log-table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Time</th>
+            <th>IP Address</th>
+            <th>Username</th>
+            <th>Action</th>
+            <th>Detail</th>
+          </tr>
+        </thead>
+        <tbody id="log-body"></tbody>
+      </table>
+      <div id="empty-state">No activity yet — check back soon.</div>
+    </div>
+  </main>
+
+  <script>
+    const KEY = 'eonmaster6767';
+    let allEntries = [];
+
+    function fmt(iso) {
+      const d = new Date(iso);
+      return d.toLocaleDateString() + ' ' + d.toLocaleTimeString();
+    }
+
+    function escHtml(s) {
+      return String(s ?? '')
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;');
+    }
+
+    function renderTable() {
+      const text   = document.getElementById('filter-text').value.toLowerCase();
+      const action = document.getElementById('filter-action').value;
+
+      const filtered = allEntries.filter(e => {
+        if (action && e.action !== action) return false;
+        if (text) {
+          const hay = (e.ip + ' ' + e.username + ' ' + (e.detail ?? '')).toLowerCase();
+          if (!hay.includes(text)) return false;
+        }
+        return true;
+      });
+
+      const tbody = document.getElementById('log-body');
+      if (filtered.length === 0) {
+        tbody.innerHTML = '';
+        document.getElementById('empty-state').style.display = 'block';
+        return;
+      }
+      document.getElementById('empty-state').style.display = 'none';
+
+      tbody.innerHTML = filtered.map(e => `
+        <tr>
+          <td class="time-cell">${escHtml(fmt(e.time))}</td>
+          <td class="ip-cell">${escHtml(e.ip)}</td>
+          <td>${escHtml(e.username)}</td>
+          <td><span class="badge badge-${escHtml(e.action)}">${escHtml(e.action)}</span></td>
+          <td class="detail">${escHtml(e.detail ?? '')}</td>
+        </tr>
+      `).join('');
+    }
+
+    function updateStats(entries) {
+      document.getElementById('stat-total').textContent  = entries.length;
+      document.getElementById('stat-visits').textContent = entries.filter(e => e.action === 'page_visit').length;
+      document.getElementById('stat-ips').textContent    = new Set(entries.map(e => e.ip)).size;
+      document.getElementById('stat-chats').textContent  = entries.filter(e => e.action === 'chat').length;
+    }
+
+    async function load() {
+      const btn = document.getElementById('refresh-btn');
+      const err = document.getElementById('error-msg');
+      btn.disabled = true;
+      btn.textContent = 'Loading…';
+      err.style.display = 'none';
+
+      try {
+        const res = await fetch('/api/admin?key=' + encodeURIComponent(KEY));
+        if (!res.ok) throw new Error('HTTP ' + res.status);
+        const data = await res.json();
+        allEntries = data.log ?? [];
+        updateStats(allEntries);
+        renderTable();
+        const now = new Date();
+        document.getElementById('last-updated').textContent =
+          'Last updated: ' + now.toLocaleTimeString();
+      } catch (e) {
+        err.textContent = 'Failed to load data: ' + e.message;
+        err.style.display = 'block';
+      } finally {
+        btn.disabled = false;
+        btn.textContent = 'Refresh';
+      }
+    }
+
+    load();
+    setInterval(load, 30000);
+  </script>
+</body>
+</html>

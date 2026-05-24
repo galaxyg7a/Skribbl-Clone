@@ -1,9 +1,11 @@
 import { Router, type IRouter, type Request, type Response } from "express";
 import healthRouter from "./health";
+import adminRouter from "./admin";
 
 const router: IRouter = Router();
 
 router.use(healthRouter);
+router.use(adminRouter);
 
 router.post("/debug", (req: Request, res: Response) => {
   let body = "";
