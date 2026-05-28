@@ -569,7 +569,7 @@ export function setupSocketIO(server: HttpServer) {
           sendTo(socket, EV.DRAW_BATCH, room.drawCmds);
         }
 
-        logActivity(socketIp(socket), playerName, 'joined', `room ${room.id}`);
+        void logActivity(socketIp(socket), playerName, 'joined', `room ${room.id}`);
         logger.info({ roomCode: room.id, name: playerName }, 'Player joined');
       } catch (e) {
         logger.error(e, 'Error in login handler');
@@ -670,7 +670,7 @@ export function setupSocketIO(server: HttpServer) {
               }
             }
 
-            logActivity(socketIp(socket), player.name, 'chat', msg);
+            void logActivity(socketIp(socket), player.name, 'chat', msg);
 
             // Regular chat: during drawing, guessed players only talk to each other
             if (player.guessed && room.state === ST.DRAWING) {
@@ -890,7 +890,7 @@ export function setupSocketIO(server: HttpServer) {
         return;
       }
 
-      logActivity(socketIp(socket), leavingPlayer.name, 'left', `room ${roomCode}`);
+      void logActivity(socketIp(socket), leavingPlayer.name, 'left', `room ${roomCode}`);
       logger.info({ socketId: socket.id, roomCode }, 'Player left');
     });
   });

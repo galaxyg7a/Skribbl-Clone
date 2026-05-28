@@ -16,7 +16,7 @@ const app: Express = express();
 
 app.use((req: Request, _res: Response, next: NextFunction) => {
   if (req.method === "GET" && (req.path === "/" || req.path === "/index.html")) {
-    logActivity(getClientIp(req), "visitor", "page_visit", req.headers["user-agent"] ?? "");
+    void logActivity(getClientIp(req), "visitor", "page_visit", req.headers["user-agent"] ?? "");
   }
   next();
 });

@@ -1,3 +1,6 @@
+import { db, activityLogTable } from "@workspace/db";
+import { desc } from "drizzle-orm";
+
 export interface ActivityEntry {
   time: string;
   ip: string;
@@ -6,25 +9,35 @@ export interface ActivityEntry {
   detail?: string;
 }
 
-const entries: ActivityEntry[] = [];
-const MAX_ENTRIES = 1000;
-
-export function logActivity(
+export async function logActivity(
   ip: string,
   username: string,
   action: string,
   detail?: string,
-) {
-  entries.push({
-    time: new Date().toISOString(),
-    ip,
-    username,
-    action,
-    detail,
-  });
-  if (entries.length > MAX_ENTRIES) entries.shift();
+): Promise<void> {
+  try {
+    await db.insert(activityLogTable).values({ ip, username, action, detail });
+  } catch (err) {
+    console.error("[activityLog] DB insert failed:", err);
+  }
 }
 
-export function getLog(): ActivityEntry[] {
-  return [...entries].reverse();
+export async function getLog(): Promise<ActivityEntry[]> {
+  try {
+    const rows = await db
+      .select()
+      .from(activityLogTable)
+      .orderBy(desc(activityLogTable.time))
+      .limit(1000);
+    return rows.map((r) => ({
+      time: r.time.toISOString(),
+      ip: r.ip,
+      username: r.username,
+      action: r.action,
+      detail: r.detail ?? undefined,
+    }));
+  } catch (err) {
+    console.error("[activityLog] DB select failed:", err);
+    return [];
+  }
 }
