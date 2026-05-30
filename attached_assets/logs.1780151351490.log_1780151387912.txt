@@ -1,0 +1,139 @@
+2026-05-30T05:03:34.698943814Z [inf]  scheduling build on Metal builder "builder-rrmswf"
+2026-05-30T05:03:37.658777473Z [inf]  unpacking archive
+2026-05-30T05:03:37.840093589Z [inf]  [internal] load build definition from Dockerfile
+2026-05-30T05:03:37.840204445Z [inf]  [internal] load build definition from Dockerfile
+2026-05-30T05:03:37.840459127Z [inf]  [internal] load build definition from Dockerfile
+2026-05-30T05:03:38.063322410Z [inf]  [internal] load build definition from Dockerfile
+2026-05-30T05:03:38.118549102Z [inf]  [internal] load metadata for docker.io/library/node:22-alpine
+2026-05-30T05:03:38.227278278Z [inf]  uploading snapshot
+2026-05-30T05:03:38.652569162Z [inf]  [internal] load metadata for docker.io/library/node:22-alpine
+2026-05-30T05:03:38.653197264Z [inf]  [internal] load .dockerignore
+2026-05-30T05:03:38.653321300Z [inf]  [internal] load .dockerignore
+2026-05-30T05:03:38.653568662Z [inf]  [internal] load .dockerignore
+2026-05-30T05:03:38.866674394Z [inf]  [internal] load .dockerignore
+2026-05-30T05:03:38.894473734Z [inf]  [6/6] RUN pnpm --filter @workspace/api-server run build
+2026-05-30T05:03:38.894475517Z [inf]  [5/6] RUN pnpm install --no-frozen-lockfile
+2026-05-30T05:03:38.894476027Z [inf]  [4/6] COPY . .
+2026-05-30T05:03:38.894476538Z [inf]  [internal] load build context
+2026-05-30T05:03:38.894476919Z [inf]  [3/6] WORKDIR /app
+2026-05-30T05:03:38.894477309Z [inf]  [2/6] RUN npm install -g pnpm@10
+2026-05-30T05:03:38.894477690Z [inf]  [1/6] FROM docker.io/library/node:22-alpine@sha256:968df39aedcea65eeb078fb336ed7191baf48f972b4479711397108be0966920
+2026-05-30T05:03:38.894761466Z [inf]  [1/6] FROM docker.io/library/node:22-alpine@sha256:968df39aedcea65eeb078fb336ed7191baf48f972b4479711397108be0966920
+2026-05-30T05:03:38.894762147Z [inf]  [internal] load build context
+2026-05-30T05:03:38.933517495Z [inf]  [1/6] FROM docker.io/library/node:22-alpine@sha256:968df39aedcea65eeb078fb336ed7191baf48f972b4479711397108be0966920
+2026-05-30T05:03:38.933535352Z [inf]  [1/6] FROM docker.io/library/node:22-alpine@sha256:968df39aedcea65eeb078fb336ed7191baf48f972b4479711397108be0966920
+2026-05-30T05:03:38.933535732Z [inf]  [1/6] FROM docker.io/library/node:22-alpine@sha256:968df39aedcea65eeb078fb336ed7191baf48f972b4479711397108be0966920
+2026-05-30T05:03:38.933537675Z [inf]  [2/6] RUN npm install -g pnpm@10
+2026-05-30T05:03:38.933545907Z [inf]  [internal] load build context
+2026-05-30T05:03:39.274094074Z [inf]  [internal] load build context
+2026-05-30T05:03:41.318382941Z [inf]  
+added 1 package in 2s
+
+1 package is looking for funding
+  run `npm fund` for details
+
+2026-05-30T05:03:41.320122862Z [inf]  npm notice
+npm notice New major version of npm available! 10.9.8 -> 11.16.0
+npm notice Changelog: https://github.com/npm/cli/releases/tag/v11.16.0
+npm notice To update run: npm install -g npm@11.16.0
+npm notice
+
+2026-05-30T05:03:41.782707751Z [inf]  [2/6] RUN npm install -g pnpm@10
+2026-05-30T05:03:41.816604770Z [inf]  [3/6] WORKDIR /app
+2026-05-30T05:03:42.156130232Z [inf]  [3/6] WORKDIR /app
+2026-05-30T05:03:42.196233362Z [inf]  [4/6] COPY . .
+2026-05-30T05:03:42.773680971Z [inf]  [4/6] COPY . .
+2026-05-30T05:03:42.810739493Z [inf]  [5/6] RUN pnpm install --no-frozen-lockfile
+2026-05-30T05:03:43.667730938Z [inf]  Scope: all 8 workspace projects
+
+2026-05-30T05:03:43.796223587Z [inf]  Lockfile is up to date, resolution step is skipped
+
+2026-05-30T05:03:43.851848056Z [inf]  Progress: resolved 1, reused 0, downloaded 0, added 0
+
+2026-05-30T05:03:44.032902969Z [inf]  Packages: +486
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+2026-05-30T05:03:44.85856023Z [inf]  Progress: resolved 486, reused 0, downloaded 11, added 0
+
+2026-05-30T05:03:45.863599064Z [inf]  
+   ╭─────────────────────────────────────────╮
+   │                                         │
+   │   Update available! 10.34.1 → 11.5.0.   │
+   │   Changelog: https://pnpm.io/v/11.5.0   │
+   │    To update, run: pnpm add -g pnpm     │
+   │                                         │
+   ╰─────────────────────────────────────────╯
+
+
+2026-05-30T05:03:45.867335951Z [inf]  Progress: resolved 486, reused 0, downloaded 478, added 109
+
+2026-05-30T05:03:46.579324514Z [inf]  Progress: resolved 486, reused 0, downloaded 486, added 486, done
+
+2026-05-30T05:03:46.995578989Z [inf]  .../esbuild@0.27.3/node_modules/esbuild postinstall$ node install.js
+
+2026-05-30T05:03:47.146699279Z [inf]  .../esbuild@0.27.3/node_modules/esbuild postinstall: Done
+
+2026-05-30T05:03:47.462324431Z [inf]  
+devDependencies:
++ prettier 3.8.3
++ typescript 5.9.3
+
+
+2026-05-30T05:03:47.488900756Z [inf]  . preinstall$ sh -c 'rm -f package-lock.json yarn.lock; case "$npm_config_user_agent" in pnpm/*) ;; *) echo "Use pnpm instead" >&2; exit 1 ;; esac'
+
+2026-05-30T05:03:47.537877761Z [inf]  . preinstall: Done
+
+2026-05-30T05:03:47.842834626Z [inf]  Done in 4.6s using pnpm v10.34.1
+
+2026-05-30T05:03:49.192384452Z [inf]  [5/6] RUN pnpm install --no-frozen-lockfile
+2026-05-30T05:03:49.244322970Z [inf]  [6/6] RUN pnpm --filter @workspace/api-server run build
+2026-05-30T05:03:50.576129944Z [inf]  
+> @workspace/api-server@0.0.0 build /app/artifacts/api-server
+> node ./build.mjs
+
+
+2026-05-30T05:03:50.885743657Z [inf]  
+  dist/index.mjs                       1.8mb ⚠️
+  dist/pino-worker.mjs               153.4kb
+  dist/pino-file.mjs                 142.0kb
+  dist/pino-pretty.mjs               114.6kb
+  dist/thread-stream-worker.mjs        7.3kb
+  dist/index.mjs.map                   3.1mb
+  dist/pino-worker.mjs.map           256.9kb
+  dist/pino-file.mjs.map             229.0kb
+  dist/pino-pretty.mjs.map           204.0kb
+  dist/thread-stream-worker.mjs.map   12.0kb
+
+⚡ Done in 222ms
+
+2026-05-30T05:03:50.92778194Z [inf]  Copied public/ -> dist/public/
+
+2026-05-30T05:03:51.216840863Z [inf]  [6/6] RUN pnpm --filter @workspace/api-server run build
+2026-05-30T05:03:51.289311647Z [inf]  exporting to docker image format
+2026-05-30T05:03:56.437721838Z [inf]  exporting to docker image format
+2026-05-30T05:03:56.475208493Z [inf]  containerimage.digest: sha256:0318d5cd34b5d272154527fb786ba73159d9e5a770593ed7d10defa689d033d7
+2026-05-30T05:03:56.475212549Z [inf]  containerimage.descriptor: eyJtZWRpYVR5cGUiOiJhcHBsaWNhdGlvbi92bmQub2NpLmltYWdlLm1hbmlmZXN0LnYxK2pzb24iLCJkaWdlc3QiOiJzaGEyNTY6MDMxOGQ1Y2QzNGI1ZDI3MjE1NDUyN2ZiNzg2YmE3MzE1OWQ5ZTVhNzcwNTkzZWQ3ZDEwZGVmYTY4OWQwMzNkNyIsInNpemUiOjIwMTAsImFubm90YXRpb25zIjp7Im9yZy5vcGVuY29udGFpbmVycy5pbWFnZS5jcmVhdGVkIjoiMjAyNi0wNS0zMFQwNTowMzo1NVoifSwicGxhdGZvcm0iOnsiYXJjaGl0ZWN0dXJlIjoiYW1kNjQiLCJvcyI6ImxpbnV4In19
+2026-05-30T05:03:56.475213721Z [inf]  containerimage.config.digest: sha256:204e58aded03fd712b162c822fc7cad74af4a04ff0eb2c6ce7eab017268db337
+2026-05-30T05:04:04.144598485Z [inf]  image push
+2026-05-30T05:04:11.337327876Z [inf]  
+2026-05-30T05:04:11.337333049Z [inf]  [35m====================
+Starting Healthcheck
+====================
+[0m
+2026-05-30T05:04:11.337333703Z [inf]  [37mPath: /api/healthz[0m
+2026-05-30T05:04:11.337334295Z [inf]  [37mRetry window: 5m0s[0m
+2026-05-30T05:04:11.337334881Z [inf]  
+2026-05-30T05:04:21.391967701Z [inf]  [93mAttempt #1 failed with service unavailable. Continuing to retry for 4m49s[0m
+2026-05-30T05:04:32.421024771Z [inf]  [93mAttempt #2 failed with service unavailable. Continuing to retry for 4m38s[0m
+2026-05-30T05:04:44.447673774Z [inf]  [93mAttempt #3 failed with service unavailable. Continuing to retry for 4m26s[0m
+2026-05-30T05:04:58.475694150Z [inf]  [93mAttempt #4 failed with service unavailable. Continuing to retry for 4m12s[0m
+2026-05-30T05:05:16.503006558Z [inf]  [93mAttempt #5 failed with service unavailable. Continuing to retry for 3m54s[0m
+2026-05-30T05:05:42.531606501Z [inf]  [93mAttempt #6 failed with service unavailable. Continuing to retry for 3m28s[0m
+2026-05-30T05:06:22.558804838Z [inf]  [93mAttempt #7 failed with service unavailable. Continuing to retry for 2m48s[0m
+2026-05-30T05:07:02.605866338Z [inf]  [93mAttempt #8 failed with service unavailable. Continuing to retry for 2m8s[0m
+2026-05-30T05:07:42.632062554Z [inf]  [93mAttempt #9 failed with service unavailable. Continuing to retry for 1m28s[0m
+2026-05-30T05:08:22.658901393Z [inf]  [93mAttempt #10 failed with service unavailable. Continuing to retry for 48s[0m
+2026-05-30T05:09:02.688452577Z [inf]  [93mAttempt #11 failed with service unavailable. Continuing to retry for 8s[0m
+2026-05-30T05:09:02.718328995Z [inf]  
+2026-05-30T05:09:02.718333116Z [inf]  [91m1/1 replicas never became healthy![0m
+2026-05-30T05:09:02.718333780Z [inf]  [91mHealthcheck failed![0m

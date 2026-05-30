@@ -4,13 +4,21 @@ import * as schema from "./schema";
 
 const { Pool } = pg;
 
-if (!process.env.DATABASE_URL) {
-  throw new Error(
-    "DATABASE_URL must be set. Did you forget to provision a database?",
-  );
+let _db: ReturnType<typeof drizzle> | null = null;
+let _pool: pg.Pool | null = null;
+
+export function getDb(): ReturnType<typeof drizzle> {
+  if (!_db) {
+    const url = process.env["DATABASE_URL"];
+    if (!url) throw new Error("DATABASE_URL is not set");
+    _pool = new Pool({ connectionString: url });
+    _db = drizzle(_pool, { schema });
+  }
+  return _db;
 }
 
-export const pool = new Pool({ connectionString: process.env.DATABASE_URL });
-export const db = drizzle(pool, { schema });
+export function hasDb(): boolean {
+  return !!process.env["DATABASE_URL"];
+}
 
 export * from "./schema";

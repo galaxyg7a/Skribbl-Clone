@@ -1,4 +1,4 @@
-import { db, activityLogTable } from "@workspace/db";
+import { getDb, hasDb, activityLogTable } from "@workspace/db";
 import { desc } from "drizzle-orm";
 
 export interface ActivityEntry {
@@ -15,16 +15,18 @@ export async function logActivity(
   action: string,
   detail?: string,
 ): Promise<void> {
+  if (!hasDb()) return;
   try {
-    await db.insert(activityLogTable).values({ ip, username, action, detail });
+    await getDb().insert(activityLogTable).values({ ip, username, action, detail });
   } catch (err) {
     console.error("[activityLog] DB insert failed:", err);
   }
 }
 
 export async function getLog(): Promise<ActivityEntry[]> {
+  if (!hasDb()) return [];
   try {
-    const rows = await db
+    const rows = await getDb()
       .select()
       .from(activityLogTable)
       .orderBy(desc(activityLogTable.time))
