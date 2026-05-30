@@ -378,7 +378,8 @@ function tickDrawing(io: SocketServer, room: Room) {
     if (room.drawerId) {
       const drawer = room.players.find(p => p.id === room.drawerId);
       if (drawer && room.guessedCount > 0) {
-        const pts = Math.min(50 * room.guessedCount, 200);
+        const nonDrawerCount = room.players.filter(p => p.id !== room.drawerId).length;
+        const pts = Math.min(50 * room.guessedCount, 50 * Math.max(1, nonDrawerCount));
         drawer.score += pts;
         drawer.earnedThisTurn = pts;
       }
@@ -426,14 +427,16 @@ function endTurn(io: SocketServer, room: Room) {
 }
 
 function endRound(io: SocketServer, room: Room) {
-  room.state = ST.ROUND_OVER;
-  room.timeLeft = 8;
+  clearTimers(room);
+  // No per-round leaderboard — just a brief pause then next round starts
+  room.state = ST.STARTING;
+  room.timeLeft = 5;
   broadcastState(io, room);
   room.transTimer = setTimeout(() => {
     if (!rooms.has(room.id)) return;
     room.turnIndex = 0;
     startRound(io, room);
-  }, 8000);
+  }, 5000);
 }
 
 function endGame(io: SocketServer, room: Room) {
@@ -620,8 +623,8 @@ export function setupSocketIO(server: HttpServer) {
 
           // ── Chat / guess (id=30) ───────────────────────────────────────────
           case 30: {
-            if (room.state !== ST.DRAWING && room.state !== ST.LOBBY && room.state !== ST.WORD_SELECT) return;
-            if (socket.id === room.drawerId) return;
+            // Allow chat in all states except WAITING (pre-lobby)
+            if (room.state === ST.WAITING) return;
 
             const msg = String(data ?? '').slice(0, 100).trim();
             if (!msg) return;
@@ -633,8 +636,24 @@ export function setupSocketIO(server: HttpServer) {
               player.spamTimer = setTimeout(() => { player.spamCount = 0; player.spamTimer = null; }, 4000);
             }
 
+            // ── Drawer chat: only visible to already-guessed players + drawer ──
+            if (socket.id === room.drawerId) {
+              if (room.state === ST.DRAWING) {
+                room.players
+                  .filter(p => p.guessed || p.id === room.drawerId)
+                  .forEach(p => io.to(p.id).emit('data', { id: EV.CHAT, data: { id: socket.id, msg } }));
+              } else {
+                room.players.forEach(p => {
+                  if (!p.mutedBy.has(socket.id))
+                    io.to(p.id).emit('data', { id: EV.CHAT, data: { id: socket.id, msg } });
+                });
+              }
+              return;
+            }
+
+            // ── Guesser during active drawing phase ───────────────────────────
             if (room.state === ST.DRAWING && !player.guessed) {
-              const norm    = msg.toLowerCase().replace(/[^a-z0-9 ]/g, '').trim();
+              const norm     = msg.toLowerCase().replace(/[^a-z0-9 ]/g, '').trim();
               const wordNorm = room.currentWord.toLowerCase().replace(/[^a-z0-9 ]/g, '').trim();
 
               // Correct guess
@@ -651,17 +670,17 @@ export function setupSocketIO(server: HttpServer) {
                 player.score += total;
                 player.earnedThisTurn = total;
 
-                // Broadcast correct-guess event (hides the word from reveal)
+                // Tell everyone this player guessed (shows checkmark, does NOT reveal word)
                 send(io, room.id, EV.GUESSED, { id: socket.id });
 
-                // Only guessers + drawer can see the actual guessed message
+                // The chat message showing what they typed is only visible to guessers + drawer
                 room.players
                   .filter(p => p.guessed || p.id === room.drawerId)
                   .forEach(p => io.to(p.id).emit('data', { id: EV.CHAT, data: { id: socket.id, msg } }));
                 return;
               }
 
-              // Close guess — private hint, no broadcast
+              // Close guess — private hint only, never broadcast
               const dist = levenshtein(norm, wordNorm);
               const threshold = wordNorm.length <= 4 ? 1 : 2;
               if (dist <= threshold) {
@@ -672,13 +691,14 @@ export function setupSocketIO(server: HttpServer) {
 
             void logActivity(socketIp(socket), player.name, 'chat', msg);
 
-            // Regular chat: during drawing, guessed players only talk to each other
+            // ── Regular chat routing ──────────────────────────────────────────
+            // During drawing: guessed players chat only among themselves + drawer
             if (player.guessed && room.state === ST.DRAWING) {
               room.players
                 .filter(p => p.guessed || p.id === room.drawerId)
                 .forEach(p => io.to(p.id).emit('data', { id: EV.CHAT, data: { id: socket.id, msg } }));
             } else {
-              // Respect mutes — don't send to players who muted this player
+              // All other states: broadcast to everyone (respecting mutes)
               room.players.forEach(p => {
                 if (!p.mutedBy.has(socket.id))
                   io.to(p.id).emit('data', { id: EV.CHAT, data: { id: socket.id, msg } });
