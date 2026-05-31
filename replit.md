@@ -49,6 +49,13 @@ A real-time multiplayer draw-and-guess game, clone of skribbl.io with a full gam
 - Scoring: time-based points (up to 500) + 100 first-guesser bonus; drawer earns 50× correct guessers
 - Host migration: if host disconnects, next player becomes host automatically
 
+## Deployment
+
+- **Production is on Railway**, NOT Replit Deploy. The live URL is https://eon-skribbl.up.railway.app/
+- Railway's reverse proxy forwards real client IPs via `x-forwarded-for`. The IP extraction in `app.ts` and `engine.ts` checks `cf-connecting-ip` → `x-forwarded-for` → `x-real-ip` in that order.
+- In Replit's dev environment, the internal proxy does NOT forward any IP headers, so IPs always appear as `::1`. This is normal — real IPs only show up on Railway.
+- To push changes to Railway: commit + push to the connected Git branch (Railway auto-deploys on push).
+
 ## User preferences
 
 - The user provided zip archives of original skribbl.io assets (zip2/zip3 contain the correct 480×480 avatar atlases with transparent backgrounds).
