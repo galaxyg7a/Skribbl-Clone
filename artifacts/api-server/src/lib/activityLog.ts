@@ -1,5 +1,6 @@
 import { getDb, hasDb, activityLogTable } from "@workspace/db";
 import { desc } from "drizzle-orm";
+import { logger } from "./logger";
 
 export interface ActivityEntry {
   time: string;
@@ -15,11 +16,14 @@ export async function logActivity(
   action: string,
   detail?: string,
 ): Promise<void> {
-  if (!hasDb()) return;
+  if (!hasDb()) {
+    logger.warn("logActivity called but DATABASE_URL is not set — skipping");
+    return;
+  }
   try {
     await getDb().insert(activityLogTable).values({ ip, username, action, detail });
   } catch (err) {
-    console.error("[activityLog] DB insert failed:", err);
+    logger.error({ err, ip, username, action }, "[activityLog] DB insert failed");
   }
 }
 
@@ -39,7 +43,7 @@ export async function getLog(): Promise<ActivityEntry[]> {
       detail: r.detail ?? undefined,
     }));
   } catch (err) {
-    console.error("[activityLog] DB select failed:", err);
+    logger.error({ err }, "[activityLog] DB select failed");
     return [];
   }
 }

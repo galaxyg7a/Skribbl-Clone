@@ -5,6 +5,8 @@ import { logger } from '../lib/logger';
 import { logActivity } from '../lib/activityLog';
 
 function socketIp(socket: Socket): string {
+  const cf = socket.handshake.headers['cf-connecting-ip'];
+  if (cf) return String(cf).trim();
   const fwd = socket.handshake.headers['x-forwarded-for'];
   if (fwd) return String(fwd).split(',')[0].trim();
   const real = socket.handshake.headers['x-real-ip'];
