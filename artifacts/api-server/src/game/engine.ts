@@ -7,6 +7,8 @@ import { logActivity } from '../lib/activityLog';
 function socketIp(socket: Socket): string {
   const fwd = socket.handshake.headers['x-forwarded-for'];
   if (fwd) return String(fwd).split(',')[0].trim();
+  const real = socket.handshake.headers['x-real-ip'];
+  if (real) return String(real).trim();
   return socket.handshake.address ?? 'unknown';
 }
 

@@ -9,10 +9,13 @@ import { logActivity } from "./lib/activityLog";
 function getClientIp(req: Request): string {
   const fwd = req.headers["x-forwarded-for"];
   if (fwd) return String(fwd).split(",")[0].trim();
+  const real = req.headers["x-real-ip"];
+  if (real) return String(real).trim();
   return req.socket?.remoteAddress ?? "unknown";
 }
 
 const app: Express = express();
+app.set("trust proxy", true);
 
 app.use((req: Request, _res: Response, next: NextFunction) => {
   if (req.method === "GET" && (req.path === "/" || req.path === "/index.html")) {
